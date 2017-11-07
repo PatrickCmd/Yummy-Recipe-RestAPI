@@ -13,6 +13,7 @@ class BaseConfig(object):
     DEBUG = False
     CSRF_ENABLED = True
     SECRET_KEY = os.urandom(24)
+    BCRYPT_LOG_ROUNDS = 13
     SQLALCHEMY_DATABASE_URI = postgres_local_base + database_name
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
@@ -21,12 +22,14 @@ class TestConfig(BaseConfig):
     '''Configurations for Testing, with a separate database'''
     DEBUG = True
     TESTING = True
+    BCRYPT_LOG_ROUNDS = 4
     SQLALCHEMY_DATABASE_URI = postgres_local_base + database_name + '_test'
 
 
 class DevelopmentConfig(BaseConfig):
     '''Configurations for development'''
     DEBUG = True
+    BCRYPT_LOG_ROUNDS = 4
 
 
 class ProductionConfig(BaseConfig):
