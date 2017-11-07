@@ -12,6 +12,8 @@ env:
 # command to install app dependencies for envs
 install:
   - pip install -r requirements.txt
+before_script:
+  - "psql -c 'create database yummy_api_test;' -U postgres"
 # command to run tests
 script:
   - nosetests --with-coverage
