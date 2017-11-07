@@ -18,7 +18,7 @@ Yummy recipes app is an application that allows users  to create, save and share
 First clone this repository
 ```
 $ git clone https://github.com/PatrickCmd/Yummy-Recipe-RestAPI.git
-$ cd Yummy-Recipes-RestAPI
+$ cd Yummy-Recipe-RestAPI
 ```
 Create virtual environment and install it
 ```
