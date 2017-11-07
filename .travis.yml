@@ -7,7 +7,7 @@ services:
 # environment variables
 env:
   - APP_SETTINGS=development
-  - DATABASE_URL=postgresql://postgres:arsenal2016@localhost/yummy_restapi
+  - DATABASE_URL=postgresql://postgres:arsenal2016@localhost/yummy_api
 # command to install app dependencies for envs
 install:
   - pip install -r requirements.txt
