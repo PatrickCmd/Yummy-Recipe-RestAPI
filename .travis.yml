@@ -1,0 +1,19 @@
+language: python
+python:
+  - "3.5"
+  - "3.6"
+services:
+  - postgresql
+# environment variables
+env:
+  - APP_SETTINGS=development
+  - DATABASE_URL=postgresql://postgres:arsenal2016@localhost/yummy_restapi
+# command to install app dependencies for envs
+install:
+  - pip install -r requirements.txt
+# command to run tests
+script:
+  - nosetests --with-coverage
+# command for coverage reporting
+after_success:
+  - coveralls 

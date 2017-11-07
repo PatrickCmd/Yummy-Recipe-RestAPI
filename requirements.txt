@@ -15,6 +15,7 @@ Flask-Migrate==2.1.1
 Flask-Restless==0.17.0
 Flask-Script==2.0.6
 Flask-SQLAlchemy==2.3.0
+Flask-Testing==0.6.2
 idna==2.6
 itsdangerous==0.24
 Jinja2==2.9.6
