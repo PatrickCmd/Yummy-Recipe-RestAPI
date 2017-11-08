@@ -16,3 +16,7 @@ app.config.from_pyfile('config.py')
 
 bcrypt = Bcrypt(app)
 db.init_app(app)
+
+
+from api.auth.views import auth_blueprint
+app.register_blueprint(auth_blueprint)
