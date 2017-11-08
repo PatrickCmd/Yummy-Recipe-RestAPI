@@ -1,0 +1,6 @@
+[report]
+omit =
+    */site-packages/*
+    *test/*
+    *api/config.py*
+    *api/*/__init__.py*
