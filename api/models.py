@@ -183,6 +183,10 @@ class BlacklistToken(db.Model):
         self.token = token
         self.blacklisted_on = datetime.datetime.now()
     
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+    
     @staticmethod
     def check_blacklist(auth_token):
         # check whether auth token has been blacklisted
