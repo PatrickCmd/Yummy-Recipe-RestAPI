@@ -123,12 +123,68 @@ class RecipeCategoryAPI(MethodView):
             }
             return make_response(jsonify(responseObject)), 403
 
+
+class SingleRecipeCategoryAPI(MethodView):
+    """
+    Single Recipe Category Resource
+    """
+
+    decorators = [login_token_required]
+
+    def get(self, current_user, cat_id):
+        auth_header = request.headers['Authorization']
+        if auth_header:
+            auth_token = auth_header.split(" ")[1]
+        else:
+            auth_token = ""
+        if auth_token:
+            resp = current_user.decode_auth_token(auth_token)
+            if not isinstance(resp, str):
+                category = RecipeCategory.query.filter_by(id=cat_id, 
+                                                  user_id=\
+                                                  current_user.id).\
+                                                  first()
+                if not category:
+                    responseObject = {
+                        'message': 'No category found'
+                    }
+                    return make_response(jsonify(responseObject)), 404
+                category_data = {}
+                category_data['id'] = category.id
+                category_data['name'] = category.name
+                category_data['description'] = category.description
+                responseObject = {
+                    'status': 'success',
+                    'recipe category': category_data
+                }
+                return make_response(jsonify(responseObject)), 200
+            else:
+                responseObject = {
+                        'status': 'fail',
+                        'message': resp
+                    }
+                return make_response(jsonify(responseObject)), 401
+        else:
+            responseObject = {
+                'status': 'fail',
+                'message': 'Provide a valid auth token.'
+            }
+            return make_response(jsonify(responseObject)), 403
+
 # define the API resources
 category_view = RecipeCategoryAPI.as_view('recipe_category_api')
+singlecategory_view = SingleRecipeCategoryAPI.as_view(
+                        'single_recipe_category_api')
 
 # add Rules for API Endpoints
 category_blueprint.add_url_rule(
     '/recipe_category',
     view_func=category_view,
     methods=['POST', 'GET']
+)
+
+category_blueprint.add_url_rule(
+    '/recipe_category/<cat_id>',
+    view_func=singlecategory_view,
+    methods=['GET', 'PUT', 'DELETE']
 )
