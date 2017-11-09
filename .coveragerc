@@ -4,3 +4,18 @@ omit =
     *test/*
     *api/config.py*
     *api/*/__init__.py*
+    *ctypes/__init__.py*  
+    *ctypes/_endian.py*  
+    *ctypes/util.py*         
+    *decimal.py*              
+    *encodings/idna.py*      
+    *fractions.py*           
+    *hmac.py*                 
+    *html/__init__.py*        
+    *html/entities.py*         
+    *http/cookiejar.py*     
+    *mimetypes.py*           
+    *numbers.py*             
+    *socketserver.py*        
+    *stringprep.py*           
+    *uuid.py*     

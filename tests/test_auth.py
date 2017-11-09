@@ -3,6 +3,7 @@
 import unittest
 import json
 import uuid
+import time
 
 from api import db
 from api.models import User
@@ -18,7 +19,7 @@ class TestAuthBlueprint(BaseTestCase):
                                 "last_name": "Walukagga",
                                 "email": "pwalukagga@gmail.com",
                                 "password": "telnetcmd123"})
-            response = self.client.post('auth/register', data=user, 
+            response = self.client.post('/auth/register', data=user, 
                                         content_type='application/json')
             self.assertEqual(response.status_code, 201)
             self.assertIn('Successfully registered', str(response.data))
@@ -41,7 +42,7 @@ class TestAuthBlueprint(BaseTestCase):
                                 "last_name": "Walukagga",
                                 "email": "pwalukagga@gmail.com",
                                 "password": "telnetcmd123"})
-            response = self.client.post('auth/register', data=user, 
+            response = self.client.post('/auth/register', data=user, 
                                         content_type='application/json')
             self.assertEqual(response.status_code, 202)
             self.assertIn('User already exists', str(response.data))
@@ -54,7 +55,7 @@ class TestAuthBlueprint(BaseTestCase):
                                 "last_name": "Walukagga",
                                 "email": "pwalukagga@gmail.com",
                                 "password": "telnetcmd123"})
-            response = self.client.post('auth/register', data=user, 
+            response = self.client.post('/auth/register', data=user, 
                                         content_type='application/json')
             self.assertEqual(response.status_code, 201)
             self.assertIn('Successfully registered', str(response.data))
@@ -81,7 +82,7 @@ class TestAuthBlueprint(BaseTestCase):
                 "password": "telnetcmd123" 
             })
             response = self.client.post(
-                'auth/login', data=non_registered_user, 
+                '/auth/login', data=non_registered_user, 
                 content_type='application/json'
             )
             self.assertEqual(response.status_code, 404)
@@ -98,7 +99,7 @@ class TestAuthBlueprint(BaseTestCase):
                                 "last_name": "Walukagga",
                                 "email": "pwalukagga@gmail.com",
                                 "password": "telnetcmd123"})
-            response = self.client.post('auth/register', data=user, 
+            response = self.client.post('/auth/register', data=user, 
                                         content_type='application/json')
             self.assertEqual(response.status_code, 201)
             self.assertIn('Successfully registered', str(response.data))
@@ -109,13 +110,98 @@ class TestAuthBlueprint(BaseTestCase):
                 "password": "telnetcmd1234" 
             })
             response = self.client.post(
-                'auth/login', data=registered_user, 
+                '/auth/login', data=registered_user, 
                 content_type='application/json'
             )
             self.assertEqual(response.status_code, 401)
             self.assertIn('Incorrect password, try again', 
                             str(response.data))
             self.assertIn('fail', str(response.data))
+    
+    def test_valid_logout(self):
+        """
+        Test for logout before token expires
+        """
+        with self.client:
+            user = json.dumps({"first_name": "Patrick",
+                                "last_name": "Walukagga",
+                                "email": "pwalukagga@gmail.com",
+                                "password": "telnetcmd123"})
+            rep_register = self.client.post(
+                'auth/register', data=user, 
+                content_type='application/json'
+            )
+            self.assertEqual(rep_register.status_code, 201)
+            self.assertIn('Successfully registered', 
+                          str(rep_register.data))
+            self.assertIn('success', str(rep_register.data))
+            # registered user login
+            registered_user = json.dumps({
+                "email": "pwalukagga@gmail.com",
+                "password": "telnetcmd123" 
+            })
+            rep_login = self.client.post(
+                '/auth/login', data=registered_user, 
+                content_type='application/json'
+            )
+            self.assertEqual(rep_login.status_code, 200)
+            self.assertIn('Successfully logged in', 
+                            str(rep_login.data))
+            self.assertIn('success', str(rep_login.data))
+            # valid token logout
+            headers=dict(
+                Authorization='Bearer ' + json.loads(
+                    rep_login.data.decode()
+                )['auth_token']
+            )
+            response = self.client.post('/auth/logout', headers=headers)
+            self.assertEqual(response.status_code, 200)
+            self.assertIn('User has logged out successfully.', 
+                           str(response.data))
+    
+    def test_invalid_logout(self):
+        """
+        Test for logout after token expires
+        """
+        with self.client:
+            user = json.dumps({"first_name": "Patrick",
+                                "last_name": "Walukagga",
+                                "email": "pwalukagga@gmail.com",
+                                "password": "telnetcmd123"})
+            rep_register = self.client.post(
+                'auth/register', data=user, 
+                content_type='application/json'
+            )
+            self.assertEqual(rep_register.status_code, 201)
+            self.assertIn('Successfully registered', 
+                          str(rep_register.data))
+            self.assertIn('success', str(rep_register.data))
+            # registered user login
+            registered_user = json.dumps({
+                "email": "pwalukagga@gmail.com",
+                "password": "telnetcmd123" 
+            })
+            rep_login = self.client.post(
+                '/auth/login', data=registered_user, 
+                content_type='application/json'
+            )
+            self.assertEqual(rep_login.status_code, 200)
+            self.assertIn('Successfully logged in', 
+                            str(rep_login.data))
+            self.assertIn('success', str(rep_login.data))
+            # Invalid token logout
+            time.sleep(301)
+            headers=dict(
+                Authorization='Bearer ' + json.loads(
+                    rep_login.data.decode()
+                )['auth_token']
+            )
+            response = self.client.post('/auth/logout', headers=headers)
+            self.assertEqual(response.status_code, 401)
+            self.assertIn('Token is invalid', 
+                           str(response.data))
+            self.assertIn('fail', str(response.data))
+
 
 
 if __name__ == '__main__':
