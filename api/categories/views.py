@@ -87,6 +87,17 @@ class RecipeCategoryAPI(MethodView):
                 categories = RecipeCategory.query.\
                                          filter_by(user_id=\
                                          current_user.id).all()
+                # pagination
+                limit = request.args.get('limit', 0)
+                search = request.args.get('q', "")
+                if limit:
+                    limit = int(limit)
+                    # offset = int(request.args.get('offset', 0))
+                    categories = RecipeCategory.get_all_limit_offset(
+                                                current_user.id, limit)
+                if search:
+                    categories = [category for category in categories if 
+                                category.name == search]
                 category_list = []
                 for category in categories:
                     category_data = {}
