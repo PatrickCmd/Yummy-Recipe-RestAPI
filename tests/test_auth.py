@@ -183,7 +183,7 @@ class TestAuthBlueprint(BaseTestCase):
                             str(rep_login.data))
             self.assertIn('success', str(rep_login.data))
             # Invalid token logout
-            time.sleep(121)
+            time.sleep(61)
             headers=dict(
                 Authorization='Bearer ' + json.loads(
                     rep_login.data.decode()
