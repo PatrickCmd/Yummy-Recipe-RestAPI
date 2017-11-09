@@ -198,4 +198,3 @@ auth_blueprint.add_url_rule(
     view_func=logout_view,
     methods=['POST']
 )
-
