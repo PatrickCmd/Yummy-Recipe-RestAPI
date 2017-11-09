@@ -8,7 +8,7 @@ from flask.views import MethodView
 from functools import wraps
 
 from api import app, bcrypt, db
-from api.models import User
+from api.models import User, BlacklistToken
 
 auth_blueprint = Blueprint('auth', __name__)
 
@@ -32,7 +32,8 @@ def login_token_required(f):
                     public_id=\
                     payload['public_id']).first()
             except:
-                return jsonify({'message': 'Token is invalid'}), 401
+                return jsonify({'message': 'Token is invalid',
+                                'status': 'fail'}), 401
         else:
             return jsonify({'message': 'Token is missing'}), 401
         return f(current_user, *args, **kwargs)
@@ -43,7 +44,7 @@ class RegisterAPI(MethodView):
     """
     User Registration Resource
     """
-
+    
     def post(self):
         """get post data"""
         data = request.get_json(force=True)
@@ -124,9 +125,60 @@ class LoginAPI(MethodView):
             }
             return make_response(jsonify(responseObject)), 500
 
+
+class LogoutAPI(MethodView):
+    """
+    Logout Resource
+    """
+
+    decorators = [login_token_required]
+
+    def post(self, current_user):
+        """
+        get auth token
+        """
+        auth_header = request.headers['Authorization']
+        if auth_header:
+            auth_token = auth_header.split(" ")[1]
+        else:
+            auth_token = ""
+        if auth_token:
+            resp = current_user.decode_auth_token(auth_token)
+            if not isinstance(resp, str):
+                # mark the token as blacklisted
+                blacklist_token = BlacklistToken(token=auth_token)
+                try:
+                    # insert the token
+                    db.session.add(blacklist_token)
+                    db.session.commit()
+                    responseObject = {
+                        'status': 'success',
+                        'message': 'User has logged out successfully.'
+                    }
+                    return make_response(jsonify(responseObject)), 200
+                except Exception as e:
+                    responseObject = {
+                        'status': 'fail',
+                        'message': e
+                    }
+                    return make_response(jsonify(responseObject)), 200
+            else:
+                responseObject = {
+                    'status': 'fail',
+                    'message': resp
+                }
+                return make_response(jsonify(responseObject)), 401
+        else:
+            responseObject = {
+                'status': 'fail',
+                'message': 'Provide a valid auth token.'
+            }
+            return make_response(jsonify(responseObject)), 403
+
 # define the API resources
 registration_view = RegisterAPI.as_view('register_api')
 login_view = LoginAPI.as_view('login_api')
+logout_view = LogoutAPI.as_view('logout_api')
 
 # add Rules for API Endpoints
 auth_blueprint.add_url_rule(
@@ -138,6 +190,12 @@ auth_blueprint.add_url_rule(
 auth_blueprint.add_url_rule(
     '/auth/login',
     view_func=login_view,
+    methods=['POST']
+)
+
+auth_blueprint.add_url_rule(
+    '/auth/logout',
+    view_func=logout_view,
     methods=['POST']
 )
 

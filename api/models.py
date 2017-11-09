@@ -20,6 +20,7 @@ class User(db.Model):
     category = db.relationship('RecipeCategory', backref='users', 
                                lazy=True)
 
+
     def __init__(self, public_id, email, password, first_name, 
                   last_name):
         '''initialize with email'''
@@ -51,8 +52,8 @@ class User(db.Model):
         """
         try:
             payload = {
-                'exp': datetime.datetime.utcnow() + \
-                       datetime.timedelta(days=0, minutes=30),
+                'exp': datetime.datetime.utcnow() + 
+                       datetime.timedelta(days=0, minutes=5),
                 'iat': datetime.datetime.utcnow(),
                 'user_id': user_id,
                 'public_id': public_id
@@ -81,7 +82,7 @@ class User(db.Model):
             else:
                 return payload['user_id']
         except jwt.ExpiredSignatureError:
-            return 'Signature expired. Please log in again.'
+            return 'Token expired. Please log in again.'
         except jwt.InvalidTokenError:
             return 'Invalid token. Please log in again.'
     def __repr__(self):
