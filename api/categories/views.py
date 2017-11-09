@@ -74,6 +74,43 @@ class RecipeCategoryAPI(MethodView):
                 'message': 'Provide a valid auth token.'
             }
             return make_response(jsonify(responseObject)), 403
+    
+    def get(self, current_user):
+        auth_header = request.headers['Authorization']
+        if auth_header:
+            auth_token = auth_header.split(" ")[1]
+        else:
+            auth_token = ""
+        if auth_token:
+            resp = current_user.decode_auth_token(auth_token)
+            if not isinstance(resp, str):
+                categories = RecipeCategory.query.\
+                                         filter_by(user_id=\
+                                         current_user.id).all()
+                category_list = []
+                for category in categories:
+                    category_data = {}
+                    category_data['id'] = category.id
+                    category_data['name'] = category.name
+                    category_data['description'] = category.description
+                    category_list.append(category_data)
+                responseObject = {
+                    'status': 'success',
+                    'recipe categories': category_list
+                }
+                return make_response(jsonify(responseObject)), 200
+            else:
+                responseObject = {
+                        'status': 'fail',
+                        'message': resp
+                    }
+                return make_response(jsonify(responseObject)), 401
+        else:
+            responseObject = {
+                'status': 'fail',
+                'message': 'Provide a valid auth token.'
+            }
+            return make_response(jsonify(responseObject)), 403
 
 # define the API resources
 category_view = RecipeCategoryAPI.as_view('recipe_category_api')
@@ -82,5 +119,5 @@ category_view = RecipeCategoryAPI.as_view('recipe_category_api')
 category_blueprint.add_url_rule(
     '/recipe_category',
     view_func=category_view,
-    methods=['POST']
+    methods=['POST', 'GET']
 )
