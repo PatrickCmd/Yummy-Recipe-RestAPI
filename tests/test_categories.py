@@ -303,7 +303,7 @@ class TestCategoriesBlueprint(BaseTestCase):
     
     def test_user_retrieve_single_recipe_category(self):
         """
-        Test for user retrieves single recipe categories
+        Test for user retrieves single recipe category
         """
         with self.client:
             response = self.register_user(
@@ -394,4 +394,105 @@ class TestCategoriesBlueprint(BaseTestCase):
             self.assertEqual(response.status_code, 404)
             self.assertIn('No category found', str(response.data))
             self.assertNotIn('How to make breakfast', 
+                        str(response.data))
+    
+    def test_update_single_recipe_category(self):
+        """
+        Test for update single recipe category
+        """
+        with self.client:
+            response = self.register_user(
+                "Patrick", "Walukagga", 
+                "pwalukagga@gmail.com", "telnetcmd123"
+            )
+            self.assertEqual(response.status_code, 201)
+            self.assertIn('Successfully registered', str(response.data))
+            self.assertIn('success', str(response.data))
+            # registered user login
+            registered_user = json.dumps({
+                "email": "pwalukagga@gmail.com",
+                "password": "telnetcmd123" 
+            })
+            rep_login = self.client.post(
+                'auth/login', data=registered_user, 
+                content_type='application/json'
+            )
+            # valid token
+            headers=dict(
+                Authorization='Bearer ' + json.loads(
+                    rep_login.data.decode()
+                )['auth_token']
+            )
+            category_data = json.dumps({"name": "Breakfast", 
+                                     "description": 
+                                     "How to make breakfast"})
+            response = self.client.post('/recipe_category', 
+                                        headers=headers,
+                                        data=category_data)
+            category_data = json.dumps({"name": "Lunchfast", 
+                                     "description": 
+                                     "How to make lunchfast"})
+            response = self.client.put('/recipe_category/1', 
+                                        headers=headers,
+                                        data=category_data)
+            self.assertEqual(response.status_code, 200)
+            self.assertIn('Recipe Category updated', 
+                        str(response.data))
+            self.assertNotIn('How to make breakfast', 
+                        str(response.data))
+            # update recipe category not in database
+            response = self.client.put('/recipe_category/3', 
+                                        headers=headers,
+                                        data=category_data)
+            self.assertEqual(response.status_code, 404)
+            self.assertIn('No category found', 
+                        str(response.data))
+            self.assertNotIn('How to make lunchfast', 
+                        str(response.data))
+    
+    def test_delete_single_recipe_category(self):
+        """
+        Test for delete single recipe category
+        """
+        with self.client:
+            response = self.register_user(
+                "Patrick", "Walukagga", 
+                "pwalukagga@gmail.com", "telnetcmd123"
+            )
+            self.assertEqual(response.status_code, 201)
+            self.assertIn('Successfully registered', str(response.data))
+            self.assertIn('success', str(response.data))
+            # registered user login
+            registered_user = json.dumps({
+                "email": "pwalukagga@gmail.com",
+                "password": "telnetcmd123" 
+            })
+            rep_login = self.client.post(
+                'auth/login', data=registered_user, 
+                content_type='application/json'
+            )
+            # valid token
+            headers=dict(
+                Authorization='Bearer ' + json.loads(
+                    rep_login.data.decode()
+                )['auth_token']
+            )
+            category_data = json.dumps({"name": "Breakfast", 
+                                     "description": 
+                                     "How to make breakfast"})
+            response = self.client.post('/recipe_category', 
+                                        headers=headers,
+                                        data=category_data)
+            response = self.client.delete('/recipe_category/1', 
+                                        headers=headers, 
+                                        data=category_data)
+            self.assertEqual(response.status_code, 200)
+            self.assertIn('Recipe category deleted', 
+                        str(response.data))
+            # delete recipe category not in database
+            response = self.client.delete('/recipe_category/3', 
+                                        headers=headers, 
+                                        data=category_data)
+            self.assertEqual(response.status_code, 404)
+            self.assertIn('No category found', 
                         str(response.data))
