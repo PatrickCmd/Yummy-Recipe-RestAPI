@@ -146,15 +146,85 @@ class RecipeAPI(MethodView):
 
 
 class SingleRecipeAPI(MethodView):
-    pass    
+    """
+    Single Recipe Resource
+    """
+
+    decorators = [login_token_required]
+
+    def get(self, current_user, cat_id, recipe_id):
+        auth_header = request.headers['Authorization']
+        if auth_header:
+            auth_token = auth_header.split(" ")[1]
+        else:
+            auth_token = ""
+        if auth_token:
+            resp = current_user.decode_auth_token(auth_token)
+            if not isinstance(resp, str):
+                category = RecipeCategory.query.filter_by(id=cat_id, 
+                                                  user_id=\
+                                                  current_user.id).\
+                                                  first()
+                if not category:
+                    responseObject = {
+                        'message': 'Category not found in database'
+                    }
+                    return make_response(jsonify(responseObject)), 404
+                recipe = Recipe.query.filter_by(id=recipe_id,
+                                        cat_id=cat_id, 
+                                        user_id=current_user.id).\
+                                        first()
+                if not recipe:
+                    responseObject = {
+                        'status': 'fail',
+                        'message': 'Recipe not found'
+                    }
+                    return make_response(jsonify(responseObject)), 404
+                recipe_data = {}
+                recipe_data['id'] = recipe.id
+                recipe_data['cat_id'] = recipe.cat_id
+                recipe_data['user_id'] = recipe.user_id
+                recipe_data['name'] = recipe.name
+                recipe_data['ingredients'] = recipe.ingredients
+                recipe_data['description'] = recipe.description
+                responseObject = {
+                    'status': 'sucess',
+                    'recipe in category': recipe_data
+                }
+                return make_response(jsonify(responseObject)), 200
+            else:
+                responseObject = {
+                    'status': 'fail',
+                    'message': resp
+                }
+                return make_response(jsonify(responseObject)), 401
+        else:
+            responseObject = {
+                'status': 'fail',
+                'message': 'Provide a valid auth token.'
+            }
+            return make_response(jsonify(responseObject)), 403
+
+    def put(self, current_user, cat_id, recipe_id):
+        pass 
+
+    def delete(self, current_user, cat_id, recipe_id):
+        pass           
 
 
 # define the API resources
 recipe_view = RecipeAPI.as_view('recipe_api')
+singlerecipe_view = SingleRecipeAPI.as_view('singlerecipe_api')
 
 # add rules for the API endpoints
 recipe_blueprint.add_url_rule(
     '/recipe_category/<cat_id>/recipes',
     view_func=recipe_view,
     methods=['GET', 'POST']
+)
+
+recipe_blueprint.add_url_rule(
+    '/recipe_category/<cat_id>/recipes/<recipe_id>',
+    view_func=singlerecipe_view,
+    methods=['GET', 'PUT', 'DELETE']
 )
