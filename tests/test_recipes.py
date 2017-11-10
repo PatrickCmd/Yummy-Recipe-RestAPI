@@ -149,7 +149,7 @@ class TestRecipeBlueprint(BaseTestCase):
             cat_id=2,
             user_id=1,
             ingredients="oil, Onions, Tomatoes",
-            description="How to make breakfast"            
+            description="How to make breakfast rolex"            
         )
         recipe.save()
         recipe_data = json.dumps({"name": "Chicken Lunch Buffe", 
@@ -167,6 +167,12 @@ class TestRecipeBlueprint(BaseTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('Rolex for Lunch', str(response.data))
         self.assertIn('Mix and boil', str(response.data))
+        # get recipes in category with limit
+        response = self.client.get('/recipe_category/2/recipes?limit=1', 
+                                    headers=headers)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Rolex for Lunch', str(response.data))
+        self.assertNotIn('Mix and boil', str(response.data))
         # get recipes in category which doesnot exit
         response = self.client.get('/recipe_category/3/recipes', 
                                     headers=headers)
