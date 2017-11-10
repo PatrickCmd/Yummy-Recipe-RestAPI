@@ -35,7 +35,7 @@ class RecipeAPI(MethodView):
                                                   first()
                 if not category:
                     responseObject = {
-                        'message': 'No category found'
+                        'message': 'Category not found in database'
                     }
                     return make_response(jsonify(responseObject)), 404
                 data = request.get_json(force=True)
