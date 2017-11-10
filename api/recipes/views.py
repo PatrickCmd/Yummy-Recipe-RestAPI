@@ -107,7 +107,15 @@ class RecipeAPI(MethodView):
                     return make_response(jsonify(responseObject)), 404
                 '''Returns recipes of current logged in user'''
                 recipes = Recipe.query.filter_by(cat_id=cat_id, user_id=\
-                                                current_user.id).all()
+                                                 current_user.id).all()
+                # pagination
+                limit = request.args.get('limit', 0)
+                if limit:
+                    limit = int(limit)
+                    # offset = int(request.args.get('offset', 0))
+                    recipes = Recipe.get_all_limit_offset(cat_id,
+                                                        current_user.id, 
+                                                        limit)
                 recipe_list = []
                 for recipe in recipes:
                     recipe_data = {}
@@ -135,7 +143,10 @@ class RecipeAPI(MethodView):
                 'message': 'Provide a valid auth token.'
             }
             return make_response(jsonify(responseObject)), 403
-    
+
+
+class SingleRecipeAPI(MethodView):
+    pass    
 
 
 # define the API resources
