@@ -20,5 +20,7 @@ db.init_app(app)
 
 from api.auth.views import auth_blueprint
 from api.categories.views import category_blueprint
+from api.recipes.views import recipe_blueprint
 app.register_blueprint(auth_blueprint)
 app.register_blueprint(category_blueprint)
+app.register_blueprint(recipe_blueprint)
