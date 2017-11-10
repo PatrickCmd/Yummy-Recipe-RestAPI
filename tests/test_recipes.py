@@ -73,4 +73,31 @@ class TestRecipeBlueprint(BaseTestCase):
         self.assertEqual(response.status_code, 201)
         self.assertIn('New recipe added to category', 
                        str(response.data))
-            
+        # create recipe with same name
+        recipe_data = json.dumps({"name": "Chicken Lunch Buffe", 
+                                  "ingredients": "oil, Onions,\
+                                  Tomatoes",
+                                  "description": "Mix and boil"})
+        response = self.client.post('/recipe_category/2/recipes', 
+                                    headers=headers, 
+                                    data=recipe_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Recipe already exists', 
+                       str(response.data))
+        # create recipe in category which doesnot exit
+        response = self.client.post('/recipe_category/3/recipes', 
+                                    headers=headers, 
+                                    data=recipe_data)
+        self.assertEqual(response.status_code, 404)
+        self.assertIn('Category not found in database', 
+                       str(response.data))
+        # create recipe with empty fields
+        recipe_data = json.dumps({"name": "", 
+                                  "ingredients": "",
+                                  "description": ""})
+        response = self.client.post('/recipe_category/2/recipes', 
+                                    headers=headers, 
+                                    data=recipe_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('field names not provided', 
+                       str(response.data))
