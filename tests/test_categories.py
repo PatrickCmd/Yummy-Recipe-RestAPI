@@ -496,3 +496,50 @@ class TestCategoriesBlueprint(BaseTestCase):
             self.assertEqual(response.status_code, 404)
             self.assertIn('No category found', 
                         str(response.data))
+
+    def test_crud_category_when_logged_in(self):
+        """
+        Test for crud recipe category when not logged in
+        """
+        with self.client:
+            response = self.register_user(
+                "Patrick", "Walukagga", 
+                "pwalukagga@gmail.com", "telnetcmd123"
+            )
+            self.assertEqual(response.status_code, 201)
+            self.assertIn('Successfully registered', str(response.data))
+            self.assertIn('success', str(response.data))
+            # registered user login
+            registered_user = json.dumps({
+                "email": "pwalukagga@gmail.com",
+                "password": "telnetcmd123" 
+            })
+            # invalid token
+            headers=dict(Authorization='Bearer ')
+            category_data = json.dumps({"name": "Breakfast", 
+                                     "description": 
+                                     "How to make breakfast"})
+            response = self.client.post('/recipe_category', 
+                                        headers=headers,
+                                        data=category_data)
+            self.assertEqual(response.status_code, 401)
+            self.assertIn('Token is missing', str(response.data))
+            category_data = json.dumps({"name": "Lunchfast", 
+                                     "description": 
+                                     "How to make lunchfast"})
+            response = self.client.put('/recipe_category/1', 
+                                        headers=headers,
+                                        data=category_data)
+            self.assertEqual(response.status_code, 401)
+            self.assertIn('Token is missing', str(response.data))
+            response = self.client.delete('/recipe_category/1', 
+                                        headers=headers, 
+                                        data=category_data)
+            self.assertEqual(response.status_code, 401)
+            self.assertIn('Token is missing', str(response.data))
+            # delete recipe category not in database
+            response = self.client.delete('/recipe_category/3', 
+                                        headers=headers, 
+                                        data=category_data)
+            self.assertEqual(response.status_code, 401)
+            self.assertIn('Token is missing', str(response.data))
