@@ -64,6 +64,7 @@ Endpoint | Functionality| Access
 ------------ | ------------- | ------------- 
 POST /auth/register | Registers a user | PUBLIC
 POST /auth/login |Logs a user in | PUBLIC
+POST /auth/logout |Logs a user out | PRIVATE
 POST /recipe_category | Creates a new recipe category | PRIVATE
 GET /recipe_category | Lists all created recipe categories | PRIVATE
 GET /recipe_category/id | Gets a single recipe category with the suppled id | PRIVATE
@@ -75,5 +76,10 @@ DELETE /recipe_category/id/recipe/recipe_id | Deletes an recipe in a recipe cate
 
 To run tests run this command at the console/terminal
 ```
-nosetests
+nosetests or
+python manage.py test
+```
+To run tests with coverage run this command at the console/terminal
+```
+python manage.py test_cov
 ```
