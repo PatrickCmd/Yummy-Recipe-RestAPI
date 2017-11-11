@@ -35,7 +35,7 @@ manager.add_command('db', MigrateCommand)
 @manager.command
 def test():
     """Runs the tests without test coverage"""
-    tests = unittest.TestLoader().discover('tests', patterns='tests*.py')
+    tests = unittest.TestLoader().discover('tests', pattern='test*.py')
     result = unittest.TextTestRunner(verbosity=2).run(tests)
     if result.wasSuccessful():
         return 0
@@ -45,7 +45,7 @@ def test():
 @manager.command
 def test_cov():
     """Runs the unit tests with coverage."""
-    tests = unittest.TestLoader().discover('tests', patterns='tests*.py')
+    tests = unittest.TestLoader().discover('tests', pattern='test*.py')
     result = unittest.TextTestRunner(verbosity=2).run(tests)
     if result.wasSuccessful:
         Cov.stop()
