@@ -53,6 +53,47 @@ class TestAuthBlueprint(BaseTestCase):
             self.assertIn('User already exists', str(response.data))
             self.assertIn('fail', str(response.data))
     
+    def test_user_registration_fails_with_invalid_email(self):
+        '''Test register user with invalid email'''
+        user = json.dumps({"first_name": "Patrick",
+                           "last_name": "Walukagga",
+                           "email": "pwalukaggagmail.com",
+                           "password": "telnetcmd123"})
+        response = self.client.post('/auth/register', data=user)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Invalid Email', str(response.data))
+    
+    def test_user_registration_fails_with_name_having_special_characters(self):
+        '''Test register user with name having special characters'''
+        user = json.dumps({"first_name": "Patrick@34&*%",
+                           "last_name": "Walukagga@#$%$!^@&",
+                           "email": "pwalukagga@gmail.com",
+                           "password": "telnet123"})
+        response = self.client.post('/auth/register', data=user)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Name contains special character', 
+                      str(response.data))
+    
+    def test_user_registration_fails_with_short_password(self):
+        '''Test register user with short password'''
+        user = json.dumps({"first_name": "Patrick",
+                           "last_name": "Walukagga",
+                           "email": "pwalukagga@gmail.com",
+                           "password": "teln"})
+        response = self.client.post('/auth/register', data=user)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Password is too short', str(response.data))
+    
+    def test_user_registration_fails_with_empty_credintials(self):
+        '''Test register user with empty fields'''
+        user = json.dumps({"first_name": "",
+                           "last_name": "",
+                           "email": "",
+                           "password": ""})
+        response = self.client.post('/auth/register', data=user)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('All fields must be filled', str(response.data))
+
     def test_registered_user_login(self):
         """ Test for login of registered user """
         with self.client:
