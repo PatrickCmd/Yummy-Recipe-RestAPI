@@ -6,9 +6,11 @@ import jwt
 from flask import Blueprint, request, make_response, jsonify, json
 from flask.views import MethodView
 from functools import wraps
+from validate_email import validate_email
 
 from api import app, bcrypt, db
 from api.models import User, BlacklistToken
+from api.auth.helpers import is_valid
 
 auth_blueprint = Blueprint('auth', __name__)
 
@@ -48,6 +50,19 @@ class RegisterAPI(MethodView):
     def post(self):
         """get post data"""
         data = request.get_json(force=True)
+        if data:
+            if is_valid(data['first_name']) or \
+                        is_valid(data['last_name']):
+                return jsonify({'message': 
+                               'Name contains special characters'}),200
+            if data['email'] == "" or data['password'] == "" or \
+                data['first_name'] == "" or data['last_name'] == "":
+                return jsonify({'message': 
+                                'All fields must be filled'}), 200
+            if not validate_email(data['email']):
+                return jsonify({'Error': 'Invalid Email'}), 200
+            if len(data['password']) < 6:
+                return jsonify({'Error': 'Password is too short'}), 200
         user = User.query.filter_by(email=data['email']).first()
         if not user:
             try:
