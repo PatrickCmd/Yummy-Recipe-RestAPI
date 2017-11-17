@@ -97,6 +97,8 @@ class LoginAPI(MethodView):
     """ 
     Login User Resource
     """
+
+    @swag_from('swagger_docs/login.yaml', methods=['POST'])
     def post(self):
         # get post data
         data = request.get_json(force=True)

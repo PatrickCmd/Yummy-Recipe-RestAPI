@@ -1,0 +1,69 @@
+Logins in user
+Return a JWT token given valid email and password
+---
+tags:
+  - "User_Authentication"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"   
+    required: true
+    description: "The login details of the user"
+    schema:
+      $ref: "#/definitions/user_login"
+responses:
+  200:
+    description: "User login successful"
+    schema:
+      $ref: "#definitions/login_successful"
+  400:
+    description: "Data sent in wrong structure"
+    schema:
+      $ref: "#definitions/invalid_data"
+  401:
+    description: "Invalid user credentials"
+    schema:
+      $ref: "#definitions/invalid_login"
+definitions:
+  user_login:
+    type: "object"
+    required:
+      - "email"
+      - "password"
+    properties:
+      email:
+        type: "string"
+        format: "email"
+        example: "useremail@example.com"
+      password:
+        type: "string"
+        format: "password"
+        example: "example1234"
+  invalid_data:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        default: "The data you sent was in the wrong structure"
+  login_successful:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        default: "Login successful"
+      access_token:
+        type: "string"
+        example: "yhfgkkyyhhh6774kkg"
+      status:
+        type: "string"
+        example: "success"
+  invalid_login:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        example: "fail"
+        default: "Invalid username or password. Try again"
