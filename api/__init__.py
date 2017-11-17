@@ -18,7 +18,7 @@ app.config.from_object(app_config[config_name])
 app.config.from_pyfile('config.py')
 # swagger configuration
 app.config['SWAGGER'] = {
-    'title': 'YummyRecipes',
+    'title': 'Yummy Recipes',
         'description': "This project is part of the [Andela Fellowship](https://andela.com/)\
     Bootcamp.\n\nYummy recipes app is an application that allows users to create, save and share\
     meeting the needs of keeping track of awesome food recipes. \nThis is a REST API built in python using\
