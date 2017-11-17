@@ -49,10 +49,6 @@ app.config['SWAGGER'] = {
             {
                 'name': 'Recipe',
                 'description': 'A recipe of a kind of food'
-            },
-            {
-                'name': 'Recipe step',
-                'description': 'A step in a given food recipe'
             },            
             {
                 'name': 'User_Authentication',

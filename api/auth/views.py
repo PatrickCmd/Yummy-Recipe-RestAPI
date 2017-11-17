@@ -7,6 +7,7 @@ from flask import Blueprint, request, make_response, jsonify, json
 from flask.views import MethodView
 from functools import wraps
 from validate_email import validate_email
+from flasgger import swag_from
 
 from api import app, bcrypt, db
 from api.models import User, BlacklistToken
@@ -47,6 +48,7 @@ class RegisterAPI(MethodView):
     User Registration Resource
     """
     
+    @swag_from('swagger_docs/register.yaml', methods=['POST'])
     def post(self):
         """get post data"""
         data = request.get_json(force=True)

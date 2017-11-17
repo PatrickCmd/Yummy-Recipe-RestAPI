@@ -1,0 +1,70 @@
+Registers new user
+Creates a new user given the user details
+---
+tags:
+  - "User_Authentication"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "body"
+    in: "body"   
+    required: true
+    description: "the details of the user"
+    schema:
+      $ref: "#/definitions/user_register"
+responses:
+  201:
+    description: "User registration successful"
+    schema:
+      $ref: "#/definitions/registration_success"
+  400:
+    description: "The data you sent was in the wrong structure"
+    schema:
+      $ref: "#/definitions/invalid_data"
+  202:
+    description: "User already exists"
+    schema:
+      $ref: "#/definitions/existing_user"
+definitions:
+  user_register:
+    type: "object"
+    required:
+      - "email"
+      - "password"
+      - "first_name"
+      - "last_name"
+    properties:
+      email:
+        type: "string"
+        format: "email"
+        example: "patrick@example.com"
+      password:
+        type: "string"
+        format: "password"
+        example: "password1234"
+      first_name:
+        type: "string"
+        example: "Patrick"
+      last_name:
+        type: "string"
+        example: "Walukagga"
+  invalid_data:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        default: "The data you sent was in the wrong structure"
+  registration_success:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        default: "User registration successful"
+  existing_user:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        default: "User already exists. Please login"
