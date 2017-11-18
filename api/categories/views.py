@@ -226,7 +226,6 @@ class SingleRecipeCategoryAPI(MethodView):
         if auth_token:
             resp = current_user.decode_auth_token(auth_token)
             if not isinstance(resp, str):
-                data = request.get_json(force=True)
                 category = RecipeCategory.query.filter_by(id=cat_id, 
                                                   user_id=\
                                                   current_user.id).\

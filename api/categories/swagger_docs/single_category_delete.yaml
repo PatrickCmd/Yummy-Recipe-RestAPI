@@ -3,8 +3,6 @@ Delete single recipe category by id passed in the url
 ---
 tags:
   - "Recipe category"
-consumes:
-  - "application/json"
 produces:
   - "application/json"
 parameters:
