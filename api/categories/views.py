@@ -77,6 +77,7 @@ class RecipeCategoryAPI(MethodView):
             }
             return make_response(jsonify(responseObject)), 403
     
+    @swag_from('swagger_docs/categories.yaml', methods=['GET'])
     def get(self, current_user):
         auth_header = request.headers['Authorization']
         if auth_header:
