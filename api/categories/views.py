@@ -216,6 +216,7 @@ class SingleRecipeCategoryAPI(MethodView):
             }
             return make_response(jsonify(responseObject)), 403
     
+    @swag_from('swagger_docs/single_category_delete.yaml', methods=['DELETE'])
     def delete(self, current_user, cat_id):
         auth_header = request.headers['Authorization']
         if auth_header:

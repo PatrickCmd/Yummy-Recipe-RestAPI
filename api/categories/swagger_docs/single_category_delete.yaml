@@ -1,0 +1,70 @@
+Delete single recipe category
+Delete single recipe category by id passed in the url
+---
+tags:
+  - "Recipe category"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "Authorization"
+    in: "header"
+    required: true
+    description: "JWT token authentication e.g. 'Bearer token' which token is provided on login"
+    type: "string"
+  - name: "cat_id"
+    in: "path"
+    required: true
+    description: "Recipe category to delete"
+    type: "integer"
+    format: "int64"
+responses:
+  403:
+    description: "You do not have the appropiate permissions"
+    schema:
+      $ref: "#/definitions/unauthorized"
+  401:
+    description: "You are logged out"
+    schema:
+      $ref: "#/definitions/logged_out"
+  200:
+    description: "Recipe category deleted"
+    schema:
+      $ref: "#/definitions/category_deleted"
+  404:
+    description: "The category doesnot exist"
+    schema:
+      $ref: "#/definitions/non_existant_category"
+securityDefinitions:
+    Bearer:
+        type: apiKey
+        name: Authorization
+        in: header
+security:
+  Bearer: []
+definitions:
+  category_deleted:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        default: "Recipe category deleted successfully"
+  non_existant_category:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        default: "The recipe category does not exist"
+  unauthorized:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        default: "You do not have the appropiate to access this endpoint"
+  logged_out:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        default: "You are logged out, please login again!"
