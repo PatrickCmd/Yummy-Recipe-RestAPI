@@ -1,5 +1,5 @@
-Views single recipe category
-Returns single recipe category by id passed in the url
+Update detail of single recipe category
+Updates details of single recipe category by id passed in the url path
 ---
 tags:
   - "Recipe category"
@@ -16,9 +16,15 @@ parameters:
   - name: "cat_id"
     in: "path"
     required: true
-    description: "ID of recipe category to return"
+    description: "ID of recipe category to update"
     type: "integer"
     format: "int64"
+  - in: body
+    name: body
+    required: true
+    description: "details of recipe category to update"
+    schema:
+      $ref: "#/definitions/category_put"
 responses:
   403:
     description: "You do not have the appropiate permissions"
@@ -44,6 +50,15 @@ securityDefinitions:
 security:
   Bearer: []
 definitions:
+  category_put:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        example: "Chicken mild"
+      description:
+        type: "string"
+        example: "How to make mild chicken"
   category:
     type: "object"
     required:
