@@ -1,0 +1,91 @@
+Add a new recipe category
+Creates a new recipe category for logged in user
+---
+tags:
+  - "Recipe category"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "Authorization"
+    in: "header"
+    required: true
+    description: "JWT token authentication e.g. 'Bearer token' which token is provided on login"
+    type: "string"
+  - in: "body"  
+    name: "body" 
+    required: true
+    description: "the details of the new recipe category"
+    schema:
+      $ref: "#/definitions/category_post"
+responses:
+  403:
+    description: "You do not have the appropiate permissions"
+    schema:
+      $ref: "#/definitions/unauthorized"
+  401:
+    description: "You are looged out"
+    schema:
+      $ref: "#/definitions/logged_out"
+  201:
+    description: "Category created successfully"
+    schema:
+      $ref: "#/definitions/category"
+  400:
+    description: "You have sent invalid data"
+    schema:
+      $ref: "#/definitions/invalid_data"
+definitions:
+  category_post:
+    type: "object"
+    required:
+      - "name"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+        example: "Chicken mild"
+      description:
+        type: "string"
+        example: "How to make mild chicken"
+      user_id:
+        type: "integer"
+        format: "int64"
+  category:
+    type: "object"
+    required:
+      - "name"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+        example: "Chicken mild"
+      description:
+        type: "string"
+        example: "How to make mild chicken"
+      user_id:
+        type: "integer"
+        format: "int64"
+  invalid_data:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        default: "You have sent invalid data"
+  unauthorized:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        default: "You do not have the appropiate to access this endpoint"
+  logged_out:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        default: "You are logged out, please login again!"
