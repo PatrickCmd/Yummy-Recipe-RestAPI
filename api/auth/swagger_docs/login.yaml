@@ -27,6 +27,10 @@ responses:
     description: "Invalid user credentials"
     schema:
       $ref: "#definitions/invalid_login"
+  404:
+    description: "User does not exist please register"
+    schema:
+      $ref: "#/definitions/unregistered_user"
 definitions:
   user_login:
     type: "object"
@@ -67,3 +71,9 @@ definitions:
         type: "string"
         example: "fail"
         default: "Invalid username or password. Try again"
+  unregistered_user:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        default: "User does not exist please register"ß
