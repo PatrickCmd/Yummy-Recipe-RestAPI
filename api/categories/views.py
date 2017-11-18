@@ -134,6 +134,7 @@ class SingleRecipeCategoryAPI(MethodView):
 
     decorators = [login_token_required]
 
+    @swag_from('swagger_docs/single_category.yaml', methods=['GET'])
     def get(self, current_user, cat_id):
         auth_header = request.headers['Authorization']
         if auth_header:
