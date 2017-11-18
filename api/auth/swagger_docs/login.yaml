@@ -46,6 +46,12 @@ definitions:
         type: "string"
         format: "password"
         example: "example1234"
+  unregistered_user:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        default: "User does not exist please register"
   invalid_data:
     type: "object"
     properties:
@@ -71,9 +77,3 @@ definitions:
         type: "string"
         example: "fail"
         default: "Invalid username or password. Try again"
-  unregistered_user:
-    type: "object"
-    properties:
-      message:
-        type: "string"
-        default: "User does not exist please register"
