@@ -51,7 +51,7 @@ definitions:
       id:
         type: "integer"
         format: "int64"
-        examole: 1
+        example: 1
       name:
         type: "string"
         example: "Chicken mild"
