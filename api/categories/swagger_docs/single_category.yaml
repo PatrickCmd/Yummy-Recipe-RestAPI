@@ -28,7 +28,7 @@ responses:
     schema:
       $ref: "#/definitions/logged_out"
   200:
-    description: "A list of all recipe categories belonging to the logged in user"
+    description: "A single recipe category by id identified in the url path"
     schema:
       $ref: "#/definitions/categories"
   404:
