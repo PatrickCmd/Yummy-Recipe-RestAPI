@@ -15,6 +15,10 @@ parameters:
     schema:
       $ref: "#/definitions/user_login"
 responses:
+  404:
+    description: "User does not exist please register"
+    schema:
+      $ref: "#/definitions/unregistered_user"
   200:
     description: "User login successful"
     schema:
@@ -27,10 +31,6 @@ responses:
     description: "Invalid user credentials"
     schema:
       $ref: "#definitions/invalid_login"
-  404:
-    description: "User does not exist please register"
-    schema:
-      $ref: "#/definitions/unregistered_user"
 definitions:
   user_login:
     type: "object"
