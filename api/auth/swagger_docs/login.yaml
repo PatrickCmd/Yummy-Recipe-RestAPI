@@ -76,4 +76,4 @@ definitions:
     properties:
       message:
         type: "string"
-        default: "User does not exist please register"ß
+        default: "User does not exist please register"
