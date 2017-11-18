@@ -30,7 +30,7 @@ responses:
   200:
     description: "A single recipe category by id identified in the url path"
     schema:
-      $ref: "#/definitions/categories"
+      $ref: "#/definitions/category"
   404:
     description: "The category doesnot exist"
     schema:
