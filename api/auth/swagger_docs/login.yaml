@@ -18,15 +18,19 @@ responses:
   200:
     description: "User login successful"
     schema:
-      $ref: "#definitions/login_successful"
+      $ref: "#/definitions/login_successful"
   400:
     description: "Data sent in wrong structure"
     schema:
-      $ref: "#definitions/invalid_data"
+      $ref: "#/definitions/invalid_data"
   401:
     description: "Invalid user credentials"
     schema:
-      $ref: "#definitions/invalid_login"
+      $ref: "#/definitions/invalid_login"
+  404:
+    description: "User does not exist please register"
+    schema:
+      $ref: "#/definitions/unregistered_user"
 definitions:
   user_login:
     type: "object"
@@ -42,6 +46,12 @@ definitions:
         type: "string"
         format: "password"
         example: "example1234"
+  unregistered_user:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        default: "User does not exist please register"
   invalid_data:
     type: "object"
     properties:
