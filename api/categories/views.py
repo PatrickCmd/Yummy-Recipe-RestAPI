@@ -5,6 +5,7 @@ import jwt
 
 from flask import Blueprint, request, make_response, jsonify, json
 from flask.views import MethodView
+from flasgger import swag_from
 
 from api import app, bcrypt, db
 from api.models import RecipeCategory, BlacklistToken
@@ -19,6 +20,7 @@ class RecipeCategoryAPI(MethodView):
 
     decorators = [login_token_required]
 
+    @swag_from('swagger_docs/categories_post.yaml', methods=['POST'])
     def post(self, current_user):
         auth_header = request.headers['Authorization']
         if auth_header:
