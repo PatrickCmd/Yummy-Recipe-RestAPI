@@ -15,10 +15,6 @@ parameters:
     schema:
       $ref: "#/definitions/user_login"
 responses:
-  404:
-    description: "User does not exist please register"
-    schema:
-      $ref: "#/definitions/unregistered_user"
   200:
     description: "User login successful"
     schema:
@@ -46,12 +42,6 @@ definitions:
         type: "string"
         format: "password"
         example: "example1234"
-  unregistered_user:
-    type: "object"
-    properties:
-      message:
-        type: "string"
-        default: "User does not exist please register"
   invalid_data:
     type: "object"
     properties:
