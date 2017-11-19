@@ -209,7 +209,7 @@ class SingleRecipeAPI(MethodView):
             }
             return make_response(jsonify(responseObject)), 403
     
-    @swag_from('swagger_docs/single_recipe.yaml', methods=['PUT'])
+    @swag_from('swagger_docs/single_recipe_put.yaml', methods=['PUT'])
     def put(self, current_user, cat_id, recipe_id):
         auth_header = request.headers['Authorization']
         if auth_header:
