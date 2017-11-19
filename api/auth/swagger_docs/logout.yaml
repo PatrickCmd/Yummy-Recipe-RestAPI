@@ -1,0 +1,57 @@
+Logs out a user
+Blacklists the JWT token passed via the header
+---
+tags:
+  - "User_Authentication"
+produces:
+  - "application/json"
+parameters:
+  - name: "Authorization"
+    in: "header"
+    required: true
+    description: "The JWT token to be blacklisted is passed as 'Bearer token'"
+    type: "string"
+responses:
+  200:
+    description: "Logout successful except if there is an internal server error"
+    schema:
+      $ref: "#/definitions/logout_attempted"
+  401:
+    description: "You are already logged out"
+    schema:
+      $ref: "#/definitions/already_logged_out"
+  403:
+    description: "You did not pass a token in the header"
+    schema:
+      $ref: "#/definitions/no_token"
+definitions:
+  logout_attempted:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        enum: ["success", "fail"]
+      message:
+        type: "string"
+        enum:
+          - "Logout successful"
+          - "Error logging out"
+  already_logged_out:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        default: "fail"
+      message:
+        type: "string"
+        enum: 
+          - "You are already logged out"
+  no_token:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        default: "fail"
+      message:
+        type: "string"
+        default: "You do not have the appropriate permissions"

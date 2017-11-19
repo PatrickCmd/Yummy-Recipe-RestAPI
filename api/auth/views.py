@@ -152,6 +152,7 @@ class LogoutAPI(MethodView):
 
     decorators = [login_token_required]
 
+    @swag_from('swagger_docs/logout.yaml', methods=['POST'])
     def post(self, current_user):
         """
         get auth token
