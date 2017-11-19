@@ -1,0 +1,91 @@
+Add a new recipe in category
+Creates a new recipe in the category by cat_id specified in the url path
+---
+tags:
+  - "Recipe"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "Authorization"
+    in: "header"
+    required: true
+    description: "JWT token authentication e.g. 'Bearer token' which token is provided on login"
+    type: "string"
+  - name: "cat_id"
+    in: "path"
+    description: "category id in which the recipe is to be added"
+    required: true
+    type: "integer"
+    format: "int64"
+  - in: "body"  
+    name: "body" 
+    required: true
+    description: "The details of the new recipe"
+    schema:
+      $ref: "#/definitions/recipe_post"
+responses:
+  403:
+    description: "You do not have the appropiate permissions"
+    schema:
+      $ref: "#/definitions/unauthorized"
+  401:
+    description: "You are looged out"
+    schema:
+      $ref: "#/definitions/logged_out"
+  201:
+    description: "Recipe created successfully"
+    schema:
+      $ref: "#/definitions/recipe"
+  400:
+    description: "You have sent invalid data"
+    schema:
+      $ref: "#/definitions/invalid_data"
+definitions:
+  recipe_post:
+    type: "object"
+    required:
+      - "name"
+    properties:
+      name:
+        type: "string"
+        example: "Breakfast Buffet"
+      ingredients:
+        type: "string"
+        example: "Bread, milk, Pizza, Salads, Cacumbali, chapati"
+      description:
+        type: "string"
+        example: "How to make breakfast cocktail recipe"
+  recipe:
+    type: "object"
+    required:
+      - "name"
+    properties:
+      name:
+        type: "string"
+        example: "Breakfast Buffet"
+      ingredients:
+        type: "string"
+        example: "Bread, milk, Pizza, Salads, Cacumbali, chapati"
+      description:
+        type: "string"
+        example: "How to make breakfast cocktail recipe"
+  invalid_data:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        default: "You have sent invalid data"
+  unauthorized:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        default: "You do not have the appropiate to access this endpoint"
+  logged_out:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        default: "You are logged out, please login again!"
