@@ -208,7 +208,8 @@ class SingleRecipeAPI(MethodView):
                 'message': 'Provide a valid auth token.'
             }
             return make_response(jsonify(responseObject)), 403
-
+    
+    @swag_from('swagger_docs/single_recipe.yaml', methods=['PUT'])
     def put(self, current_user, cat_id, recipe_id):
         auth_header = request.headers['Authorization']
         if auth_header:
