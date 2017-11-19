@@ -34,6 +34,10 @@ class User(db.Model):
         self.registered_on = datetime.datetime.now()
     
     def save(self):
+        """
+        This applies for both creating a new recipe category
+        and updating an existing onupdate
+        """
         db.session.add(self)
         db.session.commit()
     
@@ -53,7 +57,7 @@ class User(db.Model):
         try:
             payload = {
                 'exp': datetime.datetime.utcnow() + 
-                       datetime.timedelta(days=0, minutes=15),
+                       datetime.timedelta(days=0, minutes=2),
                 'iat': datetime.datetime.utcnow(),
                 'user_id': user_id,
                 'public_id': public_id
@@ -105,6 +109,10 @@ class RecipeCategory(db.Model):
         self.user_id = user_id
     
     def save(self):
+        """
+        This applies for both creating a new recipe
+        and updating an existing onupdate
+        """
         db.session.add(self)
         db.session.commit()
     
