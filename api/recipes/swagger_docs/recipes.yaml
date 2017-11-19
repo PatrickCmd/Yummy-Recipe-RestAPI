@@ -1,0 +1,90 @@
+views recipes in category
+Returns all recipes in category identified cat_id specified in the url path
+---
+tags:
+  - "Recipe"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - name: "Authorization"
+    in: "header"
+    required: true
+    description: "JWT token authentication e.g. 'Bearer token' which token is provided on login"
+    type: "string"
+  - name: "cat_id"
+    in: "path"
+    description: "category id in which the recipes belong"
+    required: true
+    type: "integer"
+    format: "int64"
+  - name: "q"
+    in: "query"
+    description: "Search recipe in category by name"
+    type: "string"
+  - name: "limit"
+    in: "query"
+    description: "Limit the number of recipes in category per request and per page"
+    type: "integer"
+responses:
+  403:
+    description: "You do not have the appropiate permissions"
+    schema:
+      $ref: "#/definitions/unauthorized"
+  401:
+    description: "You are logged out"
+    schema:
+      $ref: "#/definitions/logged_out"
+  200:
+    description: "A list of all recipes in category belonging to the logged in user whose id is in url path"
+    schema:
+      $ref: "#/definitions/recipes"
+  400:
+    description: "The limit parameters are of invalid type"
+    schema:
+      $ref: "#/definitions/invalid_query_type"
+securityDefinitions:
+    Bearer:
+        type: apiKey
+        name: Authorization
+        in: header
+security:
+  Bearer: []
+definitions:
+  recipe:
+    type: "object"
+    required:
+      - "name"
+    properties:
+      name:
+        type: "string"
+        example: "Breakfast Buffet"
+      ingredients:
+        type: "string"
+        example: "Bread, milk, Pizza, Salads, Cacumbali, chapati"
+      description:
+        type: "string"
+        example: "How to make breakfast cocktail recipe"
+  recipes:
+    type: "array"
+    items:
+      $ref: "#/definitions/recipe"
+  invalid_query_type:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        default: "The limit parameters are of invalid type"
+  unauthorized:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        default: "You do not have the appropiate to access this endpoint"
+  logged_out:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        default: "You are logged out, please login again!"
