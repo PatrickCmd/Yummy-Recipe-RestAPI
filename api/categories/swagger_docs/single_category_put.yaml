@@ -19,8 +19,8 @@ parameters:
     description: "ID of recipe category to update"
     type: "integer"
     format: "int64"
-  - in: body
-    name: body
+  - in: "body"
+    name: "body"
     required: true
     description: "details of recipe category to update"
     schema:
