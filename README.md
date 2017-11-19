@@ -7,6 +7,8 @@
 ```
 Yummy recipes app is an application that allows users  to create, save and share meeting the needs of keeping track of awesome food recipes.
 
+*see the API Documentation by following this [url](https://yummy-recipe-api.herokuapp.com)*
+
 ## Requirements(Building Blocks)
 - `Python3` - A programming language that lets us work more quickly (The universe loves speed!).
 - `Flask` - A microframework for Python based on Werkzeug, Jinja 2 and good intentions
