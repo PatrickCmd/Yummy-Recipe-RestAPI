@@ -260,7 +260,8 @@ class SingleRecipeAPI(MethodView):
                 'message': 'Provide a valid auth token.'
             }
             return make_response(jsonify(responseObject)), 403
-
+    
+    @swag_from('swagger_docs/single_recipe_delete.yaml', methods=['DELETE'])
     def delete(self, current_user, cat_id, recipe_id):
         auth_header = request.headers['Authorization']
         if auth_header:
