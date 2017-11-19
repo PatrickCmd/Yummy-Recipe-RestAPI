@@ -1,6 +1,8 @@
 # Yummy-Recipes-RestAPI
 [![Build Status](https://travis-ci.org/PatrickCmd/Yummy-Recipe-RestAPI.svg?branch=master)](https://travis-ci.org/PatrickCmd/Yummy-Recipe-RestAPI)
 [![Coverage Status](https://coveralls.io/repos/github/PatrickCmd/Yummy-Recipe-RestAPI/badge.svg?branch=master)](https://coveralls.io/github/PatrickCmd/Yummy-Recipe-RestAPI?branch=master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/f0c47514677ca33a508d/maintainability)](https://codeclimate.com/github/PatrickCmd/Yummy-Recipe-RestAPI/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/f0c47514677ca33a508d/test_coverage)](https://codeclimate.com/github/PatrickCmd/Yummy-Recipe-RestAPI/test_coverage)
 ```
 ```
 Yummy recipes app is an application that allows users  to create, save and share meeting the needs of keeping track of awesome food recipes.
