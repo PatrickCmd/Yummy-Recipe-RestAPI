@@ -45,6 +45,22 @@ class User(db.Model):
     def get_all():
         return User.query.all()
 
+    @staticmethod
+    def update():
+        """Update user"""
+        db.session.commit()
+    
+    @staticmethod
+    def change_password(old_password, new_password):
+        """
+        reset old_password to new_password
+        """
+        new_password = bcrypt.generate_password_hash(
+            new_password, app.config.get('BCRYPT_LOG_ROUNDS')
+            ).decode('UTF-8')
+        old_password = new_password
+        return old_password
+
     def delete(self):
         db.session.delete(self)
         db.session.commit()
@@ -126,6 +142,7 @@ class RecipeCategory(db.Model):
                                               userid).limit(lim).all()
 
     def delete(self):
+        """Delete RecipeCategory"""
         db.session.delete(self)
         db.session.commit()
     

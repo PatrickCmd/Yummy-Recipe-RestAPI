@@ -144,6 +144,54 @@ class LoginAPI(MethodView):
             }
             return make_response(jsonify(responseObject)), 500
 
+class PasswordResetAPI(MethodView):
+    """
+    Password Reset Resource
+    """
+
+    decorators = [login_token_required]
+    
+    def post(self, current_user):
+        # get post data
+        data = request.get_json(force=True)
+        try:
+            # fetching user data
+            user = User.query.filter_by(email=data['email']).first()
+            if user:
+                if bcrypt.check_password_hash(
+                    user.password, 
+                    data['old_password']
+                ):
+                    user.password = user.change_password(
+                        data['old_password'],
+                        data['new_password']
+                    )
+                    user.update()
+                    responseObject = {
+                        'status': 'success',
+                        'message': 'Password has been reset'
+                    }
+                    return make_response(jsonify(responseObject)), 200
+                else:
+                    responseObject = {
+                        'status': 'fail',
+                        'message': 'Incorrect password, try again',
+                    }
+                    return make_response(jsonify(responseObject)), 200
+            else:
+                responseObject = {
+                    'status': 'fail',
+                    'message': 'Wrong email provided, please try again!',
+                }
+                return make_response(jsonify(responseObject)), 200
+        except Exception as e:
+            responseObject = {
+                'status': 'fail',
+                'message': 'Try again',
+            }
+            return make_response(jsonify(responseObject)), 500
+
+
 
 class LogoutAPI(MethodView):
     """
@@ -199,6 +247,7 @@ class LogoutAPI(MethodView):
 registration_view = RegisterAPI.as_view('register_api')
 login_view = LoginAPI.as_view('login_api')
 logout_view = LogoutAPI.as_view('logout_api')
+password_reset_view = PasswordResetAPI.as_view('passwordreset_api')
 
 # add Rules for API Endpoints
 auth_blueprint.add_url_rule(
@@ -216,5 +265,11 @@ auth_blueprint.add_url_rule(
 auth_blueprint.add_url_rule(
     '/auth/logout',
     view_func=logout_view,
+    methods=['POST']
+)
+
+auth_blueprint.add_url_rule(
+    '/auth/password_reset',
+    view_func=password_reset_view,
     methods=['POST']
 )
