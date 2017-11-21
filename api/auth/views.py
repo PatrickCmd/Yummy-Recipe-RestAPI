@@ -2,6 +2,7 @@
 
 import uuid
 import jwt
+import re
 
 from flask import Blueprint, request, make_response, jsonify, json
 from flask.views import MethodView
@@ -11,7 +12,7 @@ from flasgger import swag_from
 
 from api import app, bcrypt, db
 from api.models import User, BlacklistToken
-from api.auth.helpers import is_valid
+from api.auth.helpers import is_valid, is_valid_email
 
 auth_blueprint = Blueprint('auth', __name__)
 
@@ -61,7 +62,7 @@ class RegisterAPI(MethodView):
                 data['first_name'] == "" or data['last_name'] == "":
                 return jsonify({'message': 
                                 'All fields must be filled'}), 200
-            if not validate_email(data['email']):
+            if not validate_email(is_valid_email(data['email'])):
                 return jsonify({'Error': 'Invalid Email'}), 200
             if len(data['password']) < 6:
                 return jsonify({'Error': 'Password is too short'}), 200
