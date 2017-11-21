@@ -151,6 +151,7 @@ class PasswordResetAPI(MethodView):
 
     decorators = [login_token_required]
     
+    @swag_from('swagger_docs/reset_password.yaml', methods=['POST'])
     def post(self, current_user):
         # get post data
         data = request.get_json(force=True)
