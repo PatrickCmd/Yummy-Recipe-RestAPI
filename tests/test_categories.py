@@ -19,7 +19,15 @@ class TestCategoriesBlueprint(BaseTestCase):
                                 "email": email,
                                 "password": password})
         return self.client.post('/auth/register', data=user, 
-                                 content_type='application/json')    
+                                 content_type='application/json')
+    
+    # helper function to create recipe category
+    def create_category(self, name, description, headers):
+        category_data = json.dumps({"name": name, 
+                                     "description": description})
+        return self.client.post('/recipe_category', 
+                                headers=headers,
+                                data=category_data)
 
     def test_category_creation(self):
         """
@@ -52,21 +60,14 @@ class TestCategoriesBlueprint(BaseTestCase):
                     rep_login.data.decode()
                 )['auth_token']
             )
-            category_data = json.dumps({"name": "Breakfast", 
-                                     "description": 
-                                     "How to make breakfast"})
-            response = self.client.post('/recipe_category', 
-                                        headers=headers,
-                                        data=category_data)
+            response = self.create_category("Breakfast", 
+                                            "How to make breakfast", 
+                                            headers)
             self.assertEqual(response.status_code, 201)
             self.assertIn('New recipe category created!', 
                         str(response.data))
             # creation with empty fields
-            category_data = json.dumps({"name": "", 
-                                     "description": ""})
-            response = self.client.post('/recipe_category', 
-                                        headers=headers,
-                                        data=category_data)
+            response = self.create_category("", "", headers)
             self.assertEqual(response.status_code, 200)
             self.assertIn('field names not provided', 
                         str(response.data))
@@ -81,12 +82,9 @@ class TestCategoriesBlueprint(BaseTestCase):
             self.assertEqual(response.status_code, 200)
             self.assertIn('User has logged out successfully.', 
                            str(response.data))
-            category_data = json.dumps({"name": "Breakfast", 
-                                     "description": 
-                                     "How to make breakfast"})
-            response = self.client.post('/recipe_category', 
-                                        headers=headers,
-                                        data=category_data)
+            response = self.create_category("Breakfast", 
+                                            "How to make breakfast", 
+                                            headers)
             self.assertEqual(response.status_code, 401)
             self.assertIn('Token blacklisted. Please log in again.', 
                         str(response.data))
@@ -129,12 +127,9 @@ class TestCategoriesBlueprint(BaseTestCase):
                 user_id=1
             )
             category.save()
-            category_data = json.dumps({"name": "Breakfast", 
-                                     "description": 
-                                     "How to make breakfast"})
-            response = self.client.post('/recipe_category', 
-                                        headers=headers,
-                                        data=category_data)
+            response = self.create_category("Breakfast", 
+                                            "How to make breakfast", 
+                                            headers)
             self.assertEqual(response.status_code, 200)
             self.assertIn('Category already exists', 
                         str(response.data))
@@ -171,24 +166,17 @@ class TestCategoriesBlueprint(BaseTestCase):
                     rep_login.data.decode()
                 )['auth_token']
             )
-            category_data = json.dumps({"name": "Breakfast", 
-                                     "description": 
-                                     "How to make breakfast"})
-            response = self.client.post('/recipe_category', 
-                                        headers=headers,
-                                        data=category_data)
+            response = self.create_category("Breakfast", 
+                                            "How to make breakfast", 
+                                            headers)
             self.assertEqual(response.status_code, 201)
             self.assertIn('New recipe category created!', 
                         str(response.data))
-            category_data = json.dumps({"name": "Lunchfast", 
-                                     "description": 
-                                     "How to make lunchfast"})
-            response = self.client.post('/recipe_category', 
-                                        headers=headers,
-                                        data=category_data)
+            response = self.create_category("Lunchfast", 
+                                            "How to make lunchfast", 
+                                            headers)
             response = self.client.get('/recipe_category', 
-                                        headers=headers,
-                                        data=category_data)
+                                        headers=headers)
             self.assertEqual(response.status_code, 200)
             self.assertIn('How to make lunchfast', 
                         str(response.data))
@@ -229,22 +217,15 @@ class TestCategoriesBlueprint(BaseTestCase):
                 user_id=1
             )
             category.save()
-            category_data = json.dumps({"name": "Breakfast", 
-                                     "description": 
-                                     "How to make breakfast"})
-            response = self.client.post('/recipe_category', 
-                                        headers=headers,
-                                        data=category_data)
+            response = self.create_category("Breakfast", 
+                                            "How to make breakfast", 
+                                            headers)
 
-            category_data = json.dumps({"name": "Lunchfast", 
-                                     "description": 
-                                     "How to make lunchfast"})
-            response = self.client.post('/recipe_category', 
-                                        headers=headers,
-                                        data=category_data)
+            response = self.create_category("Lunchfast", 
+                                            "How to make lunchfast", 
+                                            headers)
             response = self.client.get('/recipe_category?limit=2', 
-                                        headers=headers,
-                                        data=category_data)
+                                        headers=headers)
             self.assertEqual(response.status_code, 200)
             self.assertIn('How to make morningfast', 
                         str(response.data))
@@ -280,21 +261,15 @@ class TestCategoriesBlueprint(BaseTestCase):
                     rep_login.data.decode()
                 )['auth_token']
             )
-            category_data = json.dumps({"name": "Breakfast", 
-                                     "description": 
-                                     "How to make breakfast"})
-            response = self.client.post('/recipe_category', 
-                                        headers=headers,
-                                        data=category_data)
-            category_data = json.dumps({"name": "Lunchfast", 
-                                     "description": 
-                                     "How to make lunchfast"})
-            response = self.client.post('/recipe_category', 
-                                        headers=headers,
-                                        data=category_data)
+            response = self.create_category("Breakfast", 
+                                            "How to make breakfast", 
+                                            headers)
+            
+            response = self.create_category("Lunchfast", 
+                                            "How to make lunchfast", 
+                                            headers)
             response = self.client.get('/recipe_category?q=Lunchfast', 
-                                        headers=headers,
-                                        data=category_data)
+                                        headers=headers)
             self.assertEqual(response.status_code, 200)
             self.assertIn('How to make lunchfast', 
                         str(response.data))
@@ -328,21 +303,15 @@ class TestCategoriesBlueprint(BaseTestCase):
                     rep_login.data.decode()
                 )['auth_token']
             )
-            category_data = json.dumps({"name": "Breakfast", 
-                                     "description": 
-                                     "How to make breakfast"})
-            response = self.client.post('/recipe_category', 
-                                        headers=headers,
-                                        data=category_data)
-            category_data = json.dumps({"name": "Lunchfast", 
-                                     "description": 
-                                     "How to make lunchfast"})
-            response = self.client.post('/recipe_category', 
-                                        headers=headers,
-                                        data=category_data)
+            response = self.create_category("Breakfast", 
+                                            "How to make breakfast", 
+                                            headers)
+            
+            response = self.create_category("Lunchfast", 
+                                            "How to make lunchfast", 
+                                            headers)
             response = self.client.get('/recipe_category/2', 
-                                        headers=headers,
-                                        data=category_data)
+                                        headers=headers)
             self.assertEqual(response.status_code, 200)
             self.assertIn('How to make lunchfast', 
                         str(response.data))
@@ -376,21 +345,15 @@ class TestCategoriesBlueprint(BaseTestCase):
                     rep_login.data.decode()
                 )['auth_token']
             )
-            category_data = json.dumps({"name": "Breakfast", 
-                                     "description": 
-                                     "How to make breakfast"})
-            response = self.client.post('/recipe_category', 
-                                        headers=headers,
-                                        data=category_data)
-            category_data = json.dumps({"name": "Lunchfast", 
-                                     "description": 
-                                     "How to make lunchfast"})
-            response = self.client.post('/recipe_category', 
-                                        headers=headers,
-                                        data=category_data)
+            response = self.create_category("Breakfast", 
+                                            "How to make breakfast", 
+                                            headers)
+            
+            response = self.create_category("Lunchfast", 
+                                            "How to make lunchfast", 
+                                            headers)
             response = self.client.get('/recipe_category/3', 
-                                        headers=headers,
-                                        data=category_data)
+                                        headers=headers)
             self.assertEqual(response.status_code, 404)
             self.assertIn('No category found', str(response.data))
             self.assertNotIn('How to make breakfast', 
@@ -423,12 +386,9 @@ class TestCategoriesBlueprint(BaseTestCase):
                     rep_login.data.decode()
                 )['auth_token']
             )
-            category_data = json.dumps({"name": "Breakfast", 
-                                     "description": 
-                                     "How to make breakfast"})
-            response = self.client.post('/recipe_category', 
-                                        headers=headers,
-                                        data=category_data)
+            response = self.create_category("Breakfast", 
+                                            "How to make breakfast", 
+                                            headers)
             category_data = json.dumps({"name": "Lunchfast", 
                                      "description": 
                                      "How to make lunchfast"})
@@ -477,22 +437,21 @@ class TestCategoriesBlueprint(BaseTestCase):
                     rep_login.data.decode()
                 )['auth_token']
             )
-            category_data = json.dumps({"name": "Breakfast", 
-                                     "description": 
-                                     "How to make breakfast"})
-            response = self.client.post('/recipe_category', 
-                                        headers=headers,
-                                        data=category_data)
+            cresponse = self.create_category("Breakfast", 
+                                            "How to make breakfast", 
+                                            headers)
+            
+            response = self.create_category("Lunchfast", 
+                                            "How to make lunchfast", 
+                                            headers)
             response = self.client.delete('/recipe_category/1', 
-                                        headers=headers, 
-                                        data=category_data)
+                                        headers=headers)
             self.assertEqual(response.status_code, 200)
             self.assertIn('Recipe category deleted', 
                         str(response.data))
             # delete recipe category not in database
             response = self.client.delete('/recipe_category/3', 
-                                        headers=headers, 
-                                        data=category_data)
+                                        headers=headers, )
             self.assertEqual(response.status_code, 404)
             self.assertIn('No category found', 
                         str(response.data))
@@ -516,12 +475,9 @@ class TestCategoriesBlueprint(BaseTestCase):
             })
             # invalid token
             headers=dict(Authorization='Bearer ')
-            category_data = json.dumps({"name": "Breakfast", 
-                                     "description": 
-                                     "How to make breakfast"})
-            response = self.client.post('/recipe_category', 
-                                        headers=headers,
-                                        data=category_data)
+            response = self.create_category("Breakfast", 
+                                            "How to make breakfast", 
+                                            headers)
             self.assertEqual(response.status_code, 401)
             self.assertIn('Token is missing', str(response.data))
             category_data = json.dumps({"name": "Lunchfast", 
