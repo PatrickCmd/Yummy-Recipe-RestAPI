@@ -15,11 +15,22 @@ class TestCategoriesBlueprint(BaseTestCase):
     # helper function to register user
     def register_user(self, first_name, last_name, email, password):
         user = json.dumps({"first_name": first_name,
-                                "last_name": last_name,
-                                "email": email,
-                                "password": password})
+                            "last_name": last_name,
+                            "email": email,
+                            "password": password})
         return self.client.post('/auth/register', data=user, 
                                  content_type='application/json')
+    
+    #helper function to login user
+    def login_user(self, email, password):
+        registered_user = json.dumps({
+            "email": email,
+            "password": password 
+        })
+        return self.client.post(
+            'auth/login', data=registered_user, 
+            content_type='application/json'
+        )
     
     # helper function to create recipe category
     def create_category(self, name, description, headers):
@@ -42,14 +53,7 @@ class TestCategoriesBlueprint(BaseTestCase):
             self.assertIn('Successfully registered', str(response.data))
             self.assertIn('success', str(response.data))
             # registered user login
-            registered_user = json.dumps({
-                "email": "pwalukagga@gmail.com",
-                "password": "telnetcmd123" 
-            })
-            rep_login = self.client.post(
-                'auth/login', data=registered_user, 
-                content_type='application/json'
-            )
+            rep_login = self.login_user("pwalukagga@gmail.com", "telnetcmd123")
             self.assertEqual(rep_login.status_code, 200)
             self.assertIn('Successfully logged in', 
                             str(rep_login.data))
@@ -103,14 +107,7 @@ class TestCategoriesBlueprint(BaseTestCase):
             self.assertIn('Successfully registered', str(response.data))
             self.assertIn('success', str(response.data))
             # registered user login
-            registered_user = json.dumps({
-                "email": "pwalukagga@gmail.com",
-                "password": "telnetcmd123" 
-            })
-            rep_login = self.client.post(
-                'auth/login', data=registered_user, 
-                content_type='application/json'
-            )
+            rep_login = self.login_user("pwalukagga@gmail.com", "telnetcmd123")
             self.assertEqual(rep_login.status_code, 200)
             self.assertIn('Successfully logged in', 
                             str(rep_login.data))
@@ -148,14 +145,7 @@ class TestCategoriesBlueprint(BaseTestCase):
             self.assertIn('Successfully registered', str(response.data))
             self.assertIn('success', str(response.data))
             # registered user login
-            registered_user = json.dumps({
-                "email": "pwalukagga@gmail.com",
-                "password": "telnetcmd123" 
-            })
-            rep_login = self.client.post(
-                'auth/login', data=registered_user, 
-                content_type='application/json'
-            )
+            rep_login = self.login_user("pwalukagga@gmail.com", "telnetcmd123")
             self.assertEqual(rep_login.status_code, 200)
             self.assertIn('Successfully logged in', 
                             str(rep_login.data))
@@ -196,14 +186,7 @@ class TestCategoriesBlueprint(BaseTestCase):
             self.assertIn('Successfully registered', str(response.data))
             self.assertIn('success', str(response.data))
             # registered user login
-            registered_user = json.dumps({
-                "email": "pwalukagga@gmail.com",
-                "password": "telnetcmd123" 
-            })
-            rep_login = self.client.post(
-                'auth/login', data=registered_user, 
-                content_type='application/json'
-            )
+            rep_login = self.login_user("pwalukagga@gmail.com", "telnetcmd123")
             
             # valid token
             headers=dict(
@@ -247,14 +230,7 @@ class TestCategoriesBlueprint(BaseTestCase):
             self.assertIn('Successfully registered', str(response.data))
             self.assertIn('success', str(response.data))
             # registered user login
-            registered_user = json.dumps({
-                "email": "pwalukagga@gmail.com",
-                "password": "telnetcmd123" 
-            })
-            rep_login = self.client.post(
-                'auth/login', data=registered_user, 
-                content_type='application/json'
-            )
+            rep_login = self.login_user("pwalukagga@gmail.com", "telnetcmd123")
             # valid token
             headers=dict(
                 Authorization='Bearer ' + json.loads(
@@ -288,15 +264,7 @@ class TestCategoriesBlueprint(BaseTestCase):
             self.assertEqual(response.status_code, 201)
             self.assertIn('Successfully registered', str(response.data))
             self.assertIn('success', str(response.data))
-            # registered user login
-            registered_user = json.dumps({
-                "email": "pwalukagga@gmail.com",
-                "password": "telnetcmd123" 
-            })
-            rep_login = self.client.post(
-                'auth/login', data=registered_user, 
-                content_type='application/json'
-            )
+            rep_login = self.login_user("pwalukagga@gmail.com", "telnetcmd123")
             # valid token
             headers=dict(
                 Authorization='Bearer ' + json.loads(
@@ -331,14 +299,7 @@ class TestCategoriesBlueprint(BaseTestCase):
             self.assertIn('Successfully registered', str(response.data))
             self.assertIn('success', str(response.data))
             # registered user login
-            registered_user = json.dumps({
-                "email": "pwalukagga@gmail.com",
-                "password": "telnetcmd123" 
-            })
-            rep_login = self.client.post(
-                'auth/login', data=registered_user, 
-                content_type='application/json'
-            )
+            rep_login = self.login_user("pwalukagga@gmail.com", "telnetcmd123")
             # valid token
             headers=dict(
                 Authorization='Bearer ' + json.loads(
@@ -372,14 +333,7 @@ class TestCategoriesBlueprint(BaseTestCase):
             self.assertIn('Successfully registered', str(response.data))
             self.assertIn('success', str(response.data))
             # registered user login
-            registered_user = json.dumps({
-                "email": "pwalukagga@gmail.com",
-                "password": "telnetcmd123" 
-            })
-            rep_login = self.client.post(
-                'auth/login', data=registered_user, 
-                content_type='application/json'
-            )
+            rep_login = self.login_user("pwalukagga@gmail.com", "telnetcmd123")
             # valid token
             headers=dict(
                 Authorization='Bearer ' + json.loads(
@@ -423,14 +377,7 @@ class TestCategoriesBlueprint(BaseTestCase):
             self.assertIn('Successfully registered', str(response.data))
             self.assertIn('success', str(response.data))
             # registered user login
-            registered_user = json.dumps({
-                "email": "pwalukagga@gmail.com",
-                "password": "telnetcmd123" 
-            })
-            rep_login = self.client.post(
-                'auth/login', data=registered_user, 
-                content_type='application/json'
-            )
+            rep_login = self.login_user("pwalukagga@gmail.com", "telnetcmd123")
             # valid token
             headers=dict(
                 Authorization='Bearer ' + json.loads(
@@ -468,11 +415,6 @@ class TestCategoriesBlueprint(BaseTestCase):
             self.assertEqual(response.status_code, 201)
             self.assertIn('Successfully registered', str(response.data))
             self.assertIn('success', str(response.data))
-            # registered user login
-            registered_user = json.dumps({
-                "email": "pwalukagga@gmail.com",
-                "password": "telnetcmd123" 
-            })
             # invalid token
             headers=dict(Authorization='Bearer ')
             response = self.create_category("Breakfast", 

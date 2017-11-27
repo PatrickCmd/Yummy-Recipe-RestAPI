@@ -15,9 +15,9 @@ class TestRecipeBlueprint(BaseTestCase):
     # helper function to register user
     def register_user(self, first_name, last_name, email, password):
         user = json.dumps({"first_name": first_name,
-                                "last_name": last_name,
-                                "email": email,
-                                "password": password})
+                            "last_name": last_name,
+                            "email": email,
+                            "password": password})
         return self.client.post('/auth/register', data=user, 
                                  content_type='application/json')
     
