@@ -456,7 +456,7 @@ class TestCategoriesBlueprint(BaseTestCase):
             self.assertIn('No category found', 
                         str(response.data))
 
-    def test_crud_category_when_logged_in(self):
+    def test_crud_category_when_not_logged_in(self):
         """
         Test for crud recipe category when not logged in
         """
