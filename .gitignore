@@ -108,3 +108,4 @@ recipe_app/docs/
 
 .DS_Store
 
+# migrations
