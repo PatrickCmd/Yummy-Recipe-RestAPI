@@ -4,7 +4,8 @@
 
 import os
 
-postgres_local_base = 'postgresql://postgres:arsenal2016@localhost/'
+postgres_local_base = os.environ.get('DATABASE_URL_DEV') or \
+                      'postgresql://postgres:arsenal2016@localhost/'
 database_name = 'yummy_api'
 
 

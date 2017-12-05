@@ -26,26 +26,31 @@ $ cd Yummy-Recipe-RestAPI
 ```
 Create virtual environment and install it
 ```
-$ virtualenv env
-$ source/env/bin/activate
+$ virtualenv --python=python3 env
+$ source /env/bin/activate
 ```
 Then install all the necessary dependencies
 ```
 pip install -r requirements.txt
 ```
 
-## Set environment varibles
+## Set environment varibles and setup database
 ### On windows
 At the terminal or console type
 ```
 set APP_SETTINGS=development
-set DATABASE_URL=postgresql://postgres:@localhost/yummy_api
+set DATABASE_URL_DEV=postgresql://postgres:@localhost/yummy_api
+psql -U postgres
+postgres# CREATE DATABASE yummy_api
 ```
 ### On linux/Ubuntu or Mac
 At the terminal or console type
 ```
 export APP_SETTINGS=development
 export DATABASE_URL=postgresql://postgres:@localhost/yummy_api
+psql -U postgres
+postgres# CREATE ROLE postgres
+postgres# CREATE DATABASE yummy_api
 ```
 
 ## Initialize the database and create database tables

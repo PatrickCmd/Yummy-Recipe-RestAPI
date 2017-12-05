@@ -32,6 +32,43 @@ class TestAuthBlueprint(BaseTestCase):
             self.assertIn('Successfully registered', str(response.data))
             self.assertIn('success', str(response.data))
     
+    def test_register_user_with_empty_body(self):
+        """ Test for user registration with empty body """
+        user = json.dumps({})
+        response = self.client.post('/auth/register', data=user, 
+                                    content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            'Bad request json format data or request body is empty', 
+            str(response.data)
+        )
+    
+    def test_register_user_with_bad_json_format_body(self):
+        """ Test for user registration with bad json format body """
+        user = '"first_name", "last_name", "email", "password"'
+        response = self.client.post('/auth/register', data=user, 
+                                    content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            'Bad request json format data or request body is empty', 
+            str(response.data)
+        )
+    
+    def test_register_user_with_missing_body_field(self):
+        """ Test for user registration with missing body field """
+        user = json.dumps({
+            "first_name": "Patrick",
+            "email": "example@email.com",
+            "password": "password1234"
+        })
+        response = self.client.post('/auth/register', data=user, 
+                                    content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            'Bad request json format data or request body is empty', 
+            str(response.data)
+        )
+    
     def test_registration_with_already_registered_user(self):
         """ 
         Test for user registration with already registered email 

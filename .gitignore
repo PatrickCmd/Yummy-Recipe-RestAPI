@@ -106,3 +106,5 @@ flassger.txt
 # swagger docs
 recipe_app/docs/
 
+.DS_Store
+
