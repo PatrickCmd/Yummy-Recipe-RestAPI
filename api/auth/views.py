@@ -4,44 +4,20 @@ import uuid
 import jwt
 import re
 
-from flask import Blueprint, request, make_response, jsonify, json
+from flask import Blueprint, request, make_response, jsonify, json, abort
 from flask.views import MethodView
-from functools import wraps
 from validate_email import validate_email
 from flasgger import swag_from
 
 from api import app, bcrypt, db
 from api.models import User, BlacklistToken
 from api.auth.helpers import is_valid, is_valid_email
+from api.auth.decorators import (
+    login_token_required
+)
+from api.auth import errors
 
 auth_blueprint = Blueprint('auth', __name__)
-
-# decorator to prevent unauthenticated users from accessing
-# the endpoints
-def login_token_required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        auth_header = request.headers.get('Authorization')
-        if auth_header:
-            auth_token = auth_header.split(" ")[1]
-        else:
-            auth_token = " "
-        if auth_token:
-            try:
-                payload = jwt.decode(
-                    auth_token, 
-                    app.config['SECRET_KEY']
-                )
-                current_user = User.query.filter_by(
-                    public_id=\
-                    payload['public_id']).first()
-            except:
-                return jsonify({'message': 'Token is invalid',
-                                'status': 'fail'}), 401
-        else:
-            return jsonify({'message': 'Token is missing'}), 401
-        return f(current_user, *args, **kwargs)
-    return decorated
 
 
 class RegisterAPI(MethodView):
@@ -52,8 +28,12 @@ class RegisterAPI(MethodView):
     @swag_from('swagger_docs/register.yaml', methods=['POST'])
     def post(self):
         """get post data"""
+        if not request.get_json(force=True):
+            abort(400)
         data = request.get_json(force=True)
         if data:
+            if "email" and "password" and "first_name" and "last_name" not in data:
+                abort(400)
             if is_valid(data['first_name']) or \
                         is_valid(data['last_name']):
                 return jsonify({'message': 

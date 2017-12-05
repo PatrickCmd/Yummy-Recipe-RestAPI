@@ -40,6 +40,8 @@ class RecipeAPI(MethodView):
                         'message': 'Category not found in database'
                     }
                     return make_response(jsonify(responseObject)), 404
+                if not request.get_json(force=True):
+                    abort(400)
                 data = request.get_json(force=True)
                 if data:
                     if data['name'] == "" or data["description"] == "" \
@@ -219,6 +221,8 @@ class SingleRecipeAPI(MethodView):
         if auth_token:
             resp = current_user.decode_auth_token(auth_token)
             if not isinstance(resp, str):
+                if not request.get_json(force=True):
+                    abort(400)
                 data = request.get_json(force=True)
                 category = RecipeCategory.query.filter_by(id=cat_id, 
                                                   user_id=\

@@ -3,13 +3,13 @@
 import uuid
 import jwt
 
-from flask import Blueprint, request, make_response, jsonify, json
+from flask import Blueprint, request, make_response, jsonify, json, abort
 from flask.views import MethodView
 from flasgger import swag_from
 
 from api import app, bcrypt, db
 from api.models import RecipeCategory, BlacklistToken
-from api.auth.views import login_token_required
+from api.auth.decorators import login_token_required
 
 category_blueprint = Blueprint('category', __name__)
 
@@ -30,6 +30,8 @@ class RecipeCategoryAPI(MethodView):
         if auth_token:
             resp = current_user.decode_auth_token(auth_token)
             if not isinstance(resp, str):
+                if not request.get_json(force=True):
+                    abort(400)
                 data = request.get_json(force=True)
                 if data:
                     if data['name'] == "" or data["description"] == "":
@@ -185,6 +187,8 @@ class SingleRecipeCategoryAPI(MethodView):
         if auth_token:
             resp = current_user.decode_auth_token(auth_token)
             if not isinstance(resp, str):
+                if not request.get_json(force=True):
+                    abort(400)
                 data = request.get_json(force=True)
                 category = RecipeCategory.query.filter_by(id=cat_id, 
                                                   user_id=\
