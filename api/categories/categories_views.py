@@ -93,7 +93,8 @@ class RecipeCategoryAPI(MethodView):
                                          filter_by(user_id=\
                                          current_user.id).all()
                 # pagination
-                limit = request.args.get('limit', 0)
+                limit = request.args.get('limit', 3)
+                offset = request.args.get('start', 1)
                 search = request.args.get('q', "")
                 if limit:
                     limit = int(limit)

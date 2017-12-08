@@ -7,19 +7,11 @@ import time
 
 from api import db
 from api.models import User
-from tests.base import BaseTestCase
+from tests.register_login import RegisterLogin
 
 
-class TestAuthBlueprint(BaseTestCase):
+class TestAuthBlueprint(RegisterLogin):
     
-    # helper function to register user
-    def register_user(self, first_name, last_name, email, password):
-        user = json.dumps({"first_name": first_name,
-                                "last_name": last_name,
-                                "email": email,
-                                "password": password})
-        return self.client.post('/auth/register', data=user, 
-                                 content_type='application/json')
     
     def test_registration(self):
         """ Test for user registration """
