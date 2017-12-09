@@ -11,7 +11,9 @@ from flasgger import swag_from
 
 from api import app, bcrypt, db
 from api.models import User, BlacklistToken
-from api.auth.helpers import is_valid, is_valid_email
+from api.auth.helpers import (
+    is_valid, is_valid_email, key_missing_in_body, key_is_not_string
+)
 from api.auth.decorators import (
     login_token_required
 )
@@ -32,8 +34,12 @@ class RegisterAPI(MethodView):
             abort(400)
         data = request.get_json(force=True)
         if data:
-            if "email" and "password" and "first_name" and "last_name" not in data:
-                abort(400)
+            key_missing_in_body(data)
+            if key_is_not_string(data):
+                response_object = {
+                    'error': 'Bad request, body field must be of type string'
+                }
+                return jsonify(response_object), 400
             if is_valid(data['first_name']) or \
                         is_valid(data['last_name']):
                 return jsonify({'message': 

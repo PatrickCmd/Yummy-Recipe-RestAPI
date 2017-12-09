@@ -61,6 +61,22 @@ class TestAuthBlueprint(RegisterLogin):
             str(response.data)
         )
     
+    def test_register_user_with_body_field_not_string(self):
+        """ Test for user registration with body field not string """
+        user = json.dumps({
+            "first_name": 7828290,
+            "last_name": 12345,
+            "email": "example@email.com",
+            "password": "password1234"
+        })
+        response = self.client.post('/auth/register', data=user, 
+                                    content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            'Bad request, body field must be of type string', 
+            str(response.data)
+        )
+    
     def test_registration_with_already_registered_user(self):
         """ 
         Test for user registration with already registered email 
