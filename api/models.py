@@ -187,6 +187,10 @@ class Recipe(db.Model):
         return Recipe.query.filter_by(cat_id=catid, user_id=\
                                       userid).limit(lim).all()
 
+    @staticmethod
+    def get_all_limit(userid, lim):
+        return Recipe.query.filter_by(user_id=userid).limit(lim).all()
+
     def delete(self):
         db.session.delete(self)
         db.session.commit()
