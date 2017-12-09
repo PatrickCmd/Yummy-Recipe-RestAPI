@@ -76,9 +76,11 @@ from api.auth.views import auth_blueprint
 from api.categories.categories_views import category_blueprint
 from api.categories.single_category_views import single_category_blueprint
 from api.recipes.recipes_view import recipes_blueprint
+from api.recipes.user_recipes_view import user_recipes_blueprint
 from api.recipes.single_recipes_view import single_recipe_blueprint
 app.register_blueprint(auth_blueprint)
 app.register_blueprint(category_blueprint)
 app.register_blueprint(single_category_blueprint)
 app.register_blueprint(recipes_blueprint)
+app.register_blueprint(user_recipes_blueprint)
 app.register_blueprint(single_recipe_blueprint)
