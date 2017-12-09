@@ -94,13 +94,25 @@ class RecipeCategoryAPI(MethodView):
                                          current_user.id).all()
                 # pagination
                 limit = request.args.get('limit', 3)
-                offset = request.args.get('start', 1)
+                page = request.args.get('page', 1)
                 search = request.args.get('q', "")
                 if limit:
                     limit = int(limit)
                     # offset = int(request.args.get('offset', 0))
                     categories = RecipeCategory.get_all_limit_offset(
                                                 current_user.id, limit)
+                if limit and page:
+                    try:
+                        limit = int(limit)
+                        page = int(page)
+                    except ValueError:
+                        return make_response(jsonify({'message':
+                            'limit and page query parameters should be integers'})), 400
+                    # return an empty list if no recipe categories are found thus the False
+                    categories = RecipeCategory.query.filter_by(user_id=\
+                                         current_user.id).paginate(
+                                             page, limit, False
+                                        ).items
                 if search:
                     categories = [category for category in categories if 
                                 category.name == search]
