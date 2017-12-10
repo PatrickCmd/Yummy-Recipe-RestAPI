@@ -9,14 +9,21 @@ env:
   global:
     - APP_SETTINGS=development
     - DATABASE_URL=postgresql://postgres:arsenal2016@localhost/yummy_api
+    - CC_TEST_REPORTER_ID=fe8a8606e6a88ce8581137a2755af2d6f036d0bfd1ce6e24e0ce307504e69360
 # command to install app dependencies for envs
 install:
   - pip install -r requirements.txt
 before_script:
   - "psql -c 'create database yummy_api_test;' -U postgres"
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
 # command to run tests
 script:
   - nosetests --with-coverage
+  - bundle exec rspec
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 # command for coverage reporting
 after_success:
   - coveralls 
