@@ -12,7 +12,8 @@ from flasgger import swag_from
 from api import app, bcrypt, db
 from api.models import User, BlacklistToken
 from api.auth.helpers import (
-    is_valid, is_valid_email, key_missing_in_body, key_is_not_string
+    is_valid, is_valid_email, key_missing_in_body, key_is_not_string, 
+    login_key_missing_in_body
 )
 from api.auth.decorators import (
     login_token_required
@@ -43,15 +44,15 @@ class RegisterAPI(MethodView):
             if is_valid(data['first_name']) or \
                         is_valid(data['last_name']):
                 return jsonify({'message': 
-                               'Name contains special characters'}),200
+                               'Name contains special characters'}),400
             if data['email'] == "" or data['password'] == "" or \
                 data['first_name'] == "" or data['last_name'] == "":
                 return jsonify({'message': 
-                                'All fields must be filled'}), 200
+                                'All fields must be filled'}), 400
             if not validate_email(is_valid_email(data['email'])):
-                return jsonify({'Error': 'Invalid Email'}), 200
+                return jsonify({'Error': 'Invalid Email'}), 400
             if len(data['password']) < 6:
-                return jsonify({'Error': 'Password is too short'}), 200
+                return jsonify({'Error': 'Password is too short'}), 400
         user = User.query.filter_by(email=data['email']).first()
         if not user:
             try:
@@ -88,7 +89,16 @@ class LoginAPI(MethodView):
     @swag_from('swagger_docs/login.yaml', methods=['POST'])
     def post(self):
         # get post data
+        if not request.get_json(force=True):
+            abort(400)
         data = request.get_json(force=True)
+        if data:
+            login_key_missing_in_body(data)
+            if key_is_not_string(data):
+                response_object = {
+                    'error': 'Bad request, body field must be of type string'
+                }
+                return jsonify(response_object), 400
         try:
             # fetching user data
             user = User.query.filter_by(email=data['email']).first()
@@ -123,7 +133,7 @@ class LoginAPI(MethodView):
                     'status': 'fail',
                     'message': 'User does not exist, please register',
                 }
-                return make_response(jsonify(responseObject)), 404
+                return make_response(jsonify(responseObject)), 403
         except Exception as e:
             responseObject = {
                 'status': 'fail',

@@ -9,6 +9,7 @@ env:
   global:
     - APP_SETTINGS=development
     - DATABASE_URL=postgresql://postgres:arsenal2016@localhost/yummy_api
+    - CODECLIMATE_REPO_TOKEN=24acda37833b8e07451a762563a0b6e9d7978cfa
     - CC_TEST_REPORTER_ID=fe8a8606e6a88ce8581137a2755af2d6f036d0bfd1ce6e24e0ce307504e69360
 # command to install app dependencies for envs
 install:

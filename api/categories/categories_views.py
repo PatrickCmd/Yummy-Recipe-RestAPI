@@ -10,6 +10,9 @@ from flasgger import swag_from
 from api import app, bcrypt, db
 from api.models import RecipeCategory, BlacklistToken
 from api.auth.decorators import login_token_required
+from api.auth.helpers import (
+    is_valid, category_key_missing_in_body, key_is_not_string
+)
 
 category_blueprint = Blueprint('categories', __name__)
 
@@ -34,6 +37,12 @@ class RecipeCategoryAPI(MethodView):
                     abort(400)
                 data = request.get_json(force=True)
                 if data:
+                    category_key_missing_in_body(data)
+                    if key_is_not_string(data):
+                        response_object = {
+                            'error': 'Bad request, body field must be of type string'
+                        }
+                        return jsonify(response_object), 400
                     if data['name'] == "" or data["description"] == "":
                         responseObject = {
                             'status': 'fail',

@@ -31,7 +31,7 @@ class TestAuthBlueprint(RegisterLogin):
                                     content_type='application/json')
         self.assertEqual(response.status_code, 400)
         self.assertIn(
-            'Bad request json format data or request body is empty', 
+            'Bad request json format data or request body or field is empty', 
             str(response.data)
         )
     
@@ -42,7 +42,7 @@ class TestAuthBlueprint(RegisterLogin):
                                     content_type='application/json')
         self.assertEqual(response.status_code, 400)
         self.assertIn(
-            'Bad request json format data or request body is empty', 
+            'Bad request json format data or request body or field is empty', 
             str(response.data)
         )
     
@@ -57,7 +57,7 @@ class TestAuthBlueprint(RegisterLogin):
                                     content_type='application/json')
         self.assertEqual(response.status_code, 400)
         self.assertIn(
-            'Bad request json format data or request body is empty', 
+            'Bad request json format data or request body or field is empty', 
             str(response.data)
         )
     
@@ -105,7 +105,7 @@ class TestAuthBlueprint(RegisterLogin):
                            "email": "pwalukaggagmail.com",
                            "password": "telnetcmd123"})
         response = self.client.post('/auth/register', data=user)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         self.assertIn('Invalid Email', str(response.data))
     
     def test_user_registration_fails_with_name_having_special_characters(self):
@@ -115,7 +115,7 @@ class TestAuthBlueprint(RegisterLogin):
                            "email": "pwalukagga@gmail.com",
                            "password": "telnet123"})
         response = self.client.post('/auth/register', data=user)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         self.assertIn('Name contains special character', 
                       str(response.data))
     
@@ -126,7 +126,7 @@ class TestAuthBlueprint(RegisterLogin):
                            "email": "pwalukagga@gmail.com",
                            "password": "teln"})
         response = self.client.post('/auth/register', data=user)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         self.assertIn('Password is too short', str(response.data))
     
     def test_user_registration_fails_with_empty_credintials(self):
@@ -136,7 +136,7 @@ class TestAuthBlueprint(RegisterLogin):
                            "email": "",
                            "password": ""})
         response = self.client.post('/auth/register', data=user)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         self.assertIn('All fields must be filled', str(response.data))
 
     def test_registered_user_login(self):
@@ -174,7 +174,7 @@ class TestAuthBlueprint(RegisterLogin):
                 '/auth/login', data=non_registered_user, 
                 content_type='application/json'
             )
-            self.assertEqual(response.status_code, 404)
+            self.assertEqual(response.status_code, 403)
             self.assertIn('User does not exist, please register', 
                             str(response.data))
             self.assertIn('fail', str(response.data))

@@ -5,6 +5,7 @@ from functools import wraps
 
 from api import app, bcrypt, db
 from api.models import User, BlacklistToken
+# from api.auth.helpers import not_correct_urlrule
 
 # decorator to prevent unauthenticated users from accessing
 # the endpoints
@@ -32,3 +33,17 @@ def login_token_required(f):
             return jsonify({'message': 'Token is missing'}), 401
         return f(current_user, *args, **kwargs)
     return decorated
+
+# decorator to prevent wrong endpoint url_rules
+'''def correct_url_rule_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        url = request.url_rule
+        if not not_correct_urlrule(url):
+            message_obj = {
+                "url": url, 
+                "error": "Endpoint not found on this server"
+            }
+            return jsonify(message_obj), 404
+        return f(url, *args, **kwargs)
+    return decorated'''
