@@ -22,9 +22,6 @@ class TestSingleCategoriesBlueprint(RegisterLogin):
                 "Patrick", "Walukagga", 
                 "pwalukagga@gmail.com", "telnetcmd123"
             )
-            self.assertEqual(response.status_code, 201)
-            self.assertIn('Successfully registered', str(response.data))
-            self.assertIn('success', str(response.data))
             rep_login = self.login_user("pwalukagga@gmail.com", "telnetcmd123")
             # valid token
             headers=dict(
@@ -56,9 +53,6 @@ class TestSingleCategoriesBlueprint(RegisterLogin):
                 "Patrick", "Walukagga", 
                 "pwalukagga@gmail.com", "telnetcmd123"
             )
-            self.assertEqual(response.status_code, 201)
-            self.assertIn('Successfully registered', str(response.data))
-            self.assertIn('success', str(response.data))
             # registered user login
             rep_login = self.login_user("pwalukagga@gmail.com", "telnetcmd123")
             # valid token
@@ -90,9 +84,6 @@ class TestSingleCategoriesBlueprint(RegisterLogin):
                 "Patrick", "Walukagga", 
                 "pwalukagga@gmail.com", "telnetcmd123"
             )
-            self.assertEqual(response.status_code, 201)
-            self.assertIn('Successfully registered', str(response.data))
-            self.assertIn('success', str(response.data))
             # registered user login
             rep_login = self.login_user("pwalukagga@gmail.com", "telnetcmd123")
             # valid token
@@ -125,6 +116,43 @@ class TestSingleCategoriesBlueprint(RegisterLogin):
             self.assertNotIn('How to make lunchfast', 
                              str(response.data))
     
+    def test_update_single_recipe_category_with_one_field(self):
+        """
+        Test for update single recipe category with one field
+        """
+        with self.client:
+            response = self.register_user(
+                "Patrick", "Walukagga", 
+                "pwalukagga@gmail.com", "telnetcmd123"
+            )
+            # registered user login
+            rep_login = self.login_user("pwalukagga@gmail.com", "telnetcmd123")
+            # valid token
+            headers=dict(
+                Authorization='Bearer ' + json.loads(
+                    rep_login.data.decode()
+                )['auth_token']
+            )
+            response = self.create_category("Breakfast", 
+                                            "How to make breakfast", 
+                                            headers)
+            category_data = json.dumps({"name": "Lunchfast"})
+            response = self.client.put('/recipe_category/1', 
+                                        headers=headers,
+                                        data=category_data)
+            self.assertEqual(response.status_code, 200)
+            self.assertIn('Recipe Category updated', 
+                          str(response.data))
+            
+            category_data = json.dumps({ "description": 
+                                         "How to make lunchfast"})
+            response = self.client.put('/recipe_category/1', 
+                                        headers=headers,
+                                        data=category_data)
+            self.assertEqual(response.status_code, 200)
+            self.assertIn('Recipe Category updated', 
+                          str(response.data))
+    
     def test_delete_single_recipe_category(self):
         """
         Test for delete single recipe category
@@ -134,9 +162,6 @@ class TestSingleCategoriesBlueprint(RegisterLogin):
                 "Patrick", "Walukagga", 
                 "pwalukagga@gmail.com", "telnetcmd123"
             )
-            self.assertEqual(response.status_code, 201)
-            self.assertIn('Successfully registered', str(response.data))
-            self.assertIn('success', str(response.data))
             # registered user login
             rep_login = self.login_user("pwalukagga@gmail.com", "telnetcmd123")
             # valid token
@@ -173,9 +198,6 @@ class TestSingleCategoriesBlueprint(RegisterLogin):
                 "Patrick", "Walukagga", 
                 "pwalukagga@gmail.com", "telnetcmd123"
             )
-            self.assertEqual(response.status_code, 201)
-            self.assertIn('Successfully registered', str(response.data))
-            self.assertIn('success', str(response.data))
             # invalid token
             headers=dict(Authorization='Bearer ')
             response = self.create_category("Breakfast", 

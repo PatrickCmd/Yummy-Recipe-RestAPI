@@ -84,8 +84,13 @@ class SingleRecipeCategoryAPI(MethodView):
                         'message': 'No category found'
                     }
                     return make_response(jsonify(responseObject)), 404
-                category.name = data['name']
-                category.description = data['description']
+                if "name" in data and "description" not in data:
+                    category.name = data['name']
+                elif "name" not in data and "description" in data:
+                    category.description = data['description']
+                else:
+                    category.name = data['name']
+                    category.description = data['description']
                 category.save()
                 responseObject = {
                     'status': 'success',

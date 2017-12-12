@@ -107,9 +107,19 @@ class SingleRecipeAPI(MethodView):
                         'message': 'Recipe not found'
                     }
                     return make_response(jsonify(responseObject)), 404
-                recipe.name = data['name']
-                recipe.ingredients = data['ingredients']
-                recipe.description = data['description']
+                if "name" in data and "ingredients" not in data and \
+                   "description" not in data:
+                    recipe.name = data['name']
+                elif "name" not in data and "ingredients" in data and \
+                     "description" not in data:
+                    recipe.ingredients = data['ingredients']
+                elif "name" not in data and "ingredients" not in data and \
+                     "description" in data:
+                    recipe.description = data['description']
+                else:   
+                    recipe.name = data['name']
+                    recipe.ingredients = data['ingredients']
+                    recipe.description = data['description']
                 recipe.save()
                 responseObject = {
                     'status': 'sucess',
