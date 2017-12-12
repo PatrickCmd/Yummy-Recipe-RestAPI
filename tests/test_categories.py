@@ -22,15 +22,8 @@ class TestCategoriesBlueprint(RegisterLogin):
                 "Patrick", "Walukagga", 
                 "pwalukagga@gmail.com", "telnetcmd123"
             )
-            self.assertEqual(response.status_code, 201)
-            self.assertIn('Successfully registered', str(response.data))
-            self.assertIn('success', str(response.data))
             # registered user login
             rep_login = self.login_user("pwalukagga@gmail.com", "telnetcmd123")
-            self.assertEqual(rep_login.status_code, 200)
-            self.assertIn('Successfully logged in', 
-                            str(rep_login.data))
-            self.assertIn('success', str(rep_login.data))
             # valid token
             headers=dict(
                 Authorization='Bearer ' + json.loads(
@@ -66,7 +59,6 @@ class TestCategoriesBlueprint(RegisterLogin):
             self.assertIn('Token blacklisted. Please log in again.', 
                         str(response.data))
 
-    
     def test_category_creation_which_exists(self):
         """
         Test for category creation which already exists
@@ -76,15 +68,8 @@ class TestCategoriesBlueprint(RegisterLogin):
                 "Patrick", "Walukagga", 
                 "pwalukagga@gmail.com", "telnetcmd123"
             )
-            self.assertEqual(response.status_code, 201)
-            self.assertIn('Successfully registered', str(response.data))
-            self.assertIn('success', str(response.data))
             # registered user login
             rep_login = self.login_user("pwalukagga@gmail.com", "telnetcmd123")
-            self.assertEqual(rep_login.status_code, 200)
-            self.assertIn('Successfully logged in', 
-                            str(rep_login.data))
-            self.assertIn('success', str(rep_login.data))
             # valid token
             headers=dict(
                 Authorization='Bearer ' + json.loads(
@@ -105,6 +90,30 @@ class TestCategoriesBlueprint(RegisterLogin):
                         str(response.data))
             self.assertIn('fail', str(response.data))
     
+    def test_category_creation_with_name_having_numbers(self):
+        """
+        Test for category creation with name having numbers
+        """
+        with self.client:
+            response = self.register_user(
+                "Patrick", "Walukagga", 
+                "pwalukagga@gmail.com", "telnetcmd123"
+            )
+            # registered user login
+            rep_login = self.login_user("pwalukagga@gmail.com", "telnetcmd123")
+            # valid token
+            headers=dict(
+                Authorization='Bearer ' + json.loads(
+                    rep_login.data.decode()
+                )['auth_token']
+            )
+            response = self.create_category(12344575, 
+                                            "How to make breakfast", 
+                                            headers)
+            self.assertEqual(response.status_code, 400)
+            self.assertIn('Bad request, body field must be of type string', 
+                        str(response.data))
+    
     def test_user_retrieves_recipe_categories(self):
         """
         Test for user retrieves recipe categories
@@ -114,15 +123,8 @@ class TestCategoriesBlueprint(RegisterLogin):
                 "Patrick", "Walukagga", 
                 "pwalukagga@gmail.com", "telnetcmd123"
             )
-            self.assertEqual(response.status_code, 201)
-            self.assertIn('Successfully registered', str(response.data))
-            self.assertIn('success', str(response.data))
             # registered user login
             rep_login = self.login_user("pwalukagga@gmail.com", "telnetcmd123")
-            self.assertEqual(rep_login.status_code, 200)
-            self.assertIn('Successfully logged in', 
-                            str(rep_login.data))
-            self.assertIn('success', str(rep_login.data))
             # valid token
             headers=dict(
                 Authorization='Bearer ' + json.loads(
@@ -132,9 +134,6 @@ class TestCategoriesBlueprint(RegisterLogin):
             response = self.create_category("Breakfast", 
                                             "How to make breakfast", 
                                             headers)
-            self.assertEqual(response.status_code, 201)
-            self.assertIn('New recipe category created!', 
-                        str(response.data))
             response = self.create_category("Lunchfast", 
                                             "How to make lunchfast", 
                                             headers)
@@ -155,9 +154,6 @@ class TestCategoriesBlueprint(RegisterLogin):
                 "Patrick", "Walukagga", 
                 "pwalukagga@gmail.com", "telnetcmd123"
             )
-            self.assertEqual(response.status_code, 201)
-            self.assertIn('Successfully registered', str(response.data))
-            self.assertIn('success', str(response.data))
             # registered user login
             rep_login = self.login_user("pwalukagga@gmail.com", "telnetcmd123")
             
@@ -199,9 +195,6 @@ class TestCategoriesBlueprint(RegisterLogin):
                 "Patrick", "Walukagga", 
                 "pwalukagga@gmail.com", "telnetcmd123"
             )
-            self.assertEqual(response.status_code, 201)
-            self.assertIn('Successfully registered', str(response.data))
-            self.assertIn('success', str(response.data))
             # registered user login
             rep_login = self.login_user("pwalukagga@gmail.com", "telnetcmd123")
             # valid token

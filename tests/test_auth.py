@@ -110,13 +110,24 @@ class TestAuthBlueprint(RegisterLogin):
     
     def test_user_registration_fails_with_name_having_special_characters(self):
         '''Test register user with name having special characters'''
-        user = json.dumps({"first_name": "Patrick@34&*%",
+        user = json.dumps({"first_name": "Patrick@&*%",
                            "last_name": "Walukagga@#$%$!^@&",
                            "email": "pwalukagga@gmail.com",
                            "password": "telnet123"})
         response = self.client.post('/auth/register', data=user)
         self.assertEqual(response.status_code, 400)
         self.assertIn('Name contains special character', 
+                      str(response.data))
+    
+    def test_user_registration_fails_with_name_having_numbers(self):
+        '''Test register user with name having numbers'''
+        user = json.dumps({"first_name": "Patrick1233647",
+                           "last_name": "Walukagga364748",
+                           "email": "pwalukagga@gmail.com",
+                           "password": "telnet123"})
+        response = self.client.post('/auth/register', data=user)
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('Name field can not contain numbers', 
                       str(response.data))
     
     def test_user_registration_fails_with_short_password(self):
@@ -146,9 +157,6 @@ class TestAuthBlueprint(RegisterLogin):
                 "Patrick", "Walukagga", 
                 "pwalukagga@gmail.com", "telnetcmd123"
             )
-            self.assertEqual(response.status_code, 201)
-            self.assertIn('Successfully registered', str(response.data))
-            self.assertIn('success', str(response.data))
             # registered user login
             registered_user = json.dumps({
                 "email": "pwalukagga@gmail.com",
@@ -162,6 +170,26 @@ class TestAuthBlueprint(RegisterLogin):
             self.assertIn('Successfully logged in', 
                             str(response.data))
             self.assertIn('success', str(response.data))
+    
+    def test_registered_user_login_email_as_number(self):
+        """ Test for login of email as number """
+        with self.client:
+            response = self.register_user(
+                "Patrick", "Walukagga", 
+                "pwalukagga@gmail.com", "telnetcmd123"
+            )
+            # registered user login
+            registered_user = json.dumps({
+                "email": 1233445677,
+                "password": "telnetcmd123" 
+            })
+            response = self.client.post(
+                'auth/login', data=registered_user, 
+                content_type='application/json'
+            )
+            self.assertEqual(response.status_code, 400)
+            self.assertIn('Bad request, body field must be of type string', 
+                            str(response.data))
     
     def test_non_registered_user_login(self):
         """ Test for login of non_registered user """
@@ -188,9 +216,6 @@ class TestAuthBlueprint(RegisterLogin):
                 "Patrick", "Walukagga", 
                 "pwalukagga@gmail.com", "telnetcmd123"
             )
-            self.assertEqual(response.status_code, 201)
-            self.assertIn('Successfully registered', str(response.data))
-            self.assertIn('success', str(response.data))
             # registered user login
             registered_user = json.dumps({
                 "email": "pwalukagga@gmail.com",
@@ -214,10 +239,6 @@ class TestAuthBlueprint(RegisterLogin):
                 "Patrick", "Walukagga", 
                 "pwalukagga@gmail.com", "telnetcmd123"
             )
-            self.assertEqual(rep_register.status_code, 201)
-            self.assertIn('Successfully registered', 
-                          str(rep_register.data))
-            self.assertIn('success', str(rep_register.data))
             # registered user login
             registered_user = json.dumps({
                 "email": "pwalukagga@gmail.com",
@@ -227,10 +248,6 @@ class TestAuthBlueprint(RegisterLogin):
                 '/auth/login', data=registered_user, 
                 content_type='application/json'
             )
-            self.assertEqual(rep_login.status_code, 200)
-            self.assertIn('Successfully logged in', 
-                            str(rep_login.data))
-            self.assertIn('success', str(rep_login.data))
             # valid token logout
             headers=dict(
                 Authorization='Bearer ' + json.loads(
@@ -251,10 +268,6 @@ class TestAuthBlueprint(RegisterLogin):
                 "Patrick", "Walukagga", 
                 "pwalukagga@gmail.com", "telnetcmd123"
             )
-            self.assertEqual(rep_register.status_code, 201)
-            self.assertIn('Successfully registered', 
-                          str(rep_register.data))
-            self.assertIn('success', str(rep_register.data))
             # registered user login
             registered_user = json.dumps({
                 "email": "pwalukagga@gmail.com",
@@ -264,10 +277,6 @@ class TestAuthBlueprint(RegisterLogin):
                 '/auth/login', data=registered_user, 
                 content_type='application/json'
             )
-            self.assertEqual(rep_login.status_code, 200)
-            self.assertIn('Successfully logged in', 
-                            str(rep_login.data))
-            self.assertIn('success', str(rep_login.data))
             # Invalid token logout
             time.sleep(121)
             headers=dict(

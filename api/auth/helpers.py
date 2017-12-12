@@ -21,6 +21,23 @@ def is_valid_email(email):
     else:
         return 'Invalid email'
 
+# check if field contains number
+def hasNumbers(inputString):
+    return any(char.isdigit() for char in inputString)
+
+#check if names contain numbers
+def name_has_numbers(data):
+    keys = ('first_name', 'last_name')
+    for key in keys:
+        if hasNumbers(data[key]):
+            return True
+        else:
+            return False
+
+# string string to remove white spaces
+def strip_clean(string):
+    return string.strip()
+
 # method to check whether key is missing in request
 def key_missing_in_body(data):
     # check if key is present in data
@@ -55,6 +72,8 @@ def key_is_not_string(data):
     for key in data:
         if not isinstance(data[key], str):
             return True
+        else:
+            return False
 
 # check if endpoint url_rule is correct
 '''def not_correct_urlrule(url):

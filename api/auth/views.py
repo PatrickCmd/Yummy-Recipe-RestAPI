@@ -13,7 +13,7 @@ from api import app, bcrypt, db
 from api.models import User, BlacklistToken
 from api.auth.helpers import (
     is_valid, is_valid_email, key_missing_in_body, key_is_not_string, 
-    login_key_missing_in_body
+    login_key_missing_in_body, name_has_numbers, strip_clean
 )
 from api.auth.decorators import (
     login_token_required
@@ -41,12 +41,19 @@ class RegisterAPI(MethodView):
                     'error': 'Bad request, body field must be of type string'
                 }
                 return jsonify(response_object), 400
+            if name_has_numbers(data):
+                response_object = {
+                    'message': 'Name field can not contain numbers'
+                }
+                return jsonify(response_object), 400
             if is_valid(data['first_name']) or \
                         is_valid(data['last_name']):
                 return jsonify({'message': 
                                'Name contains special characters'}),400
-            if data['email'] == "" or data['password'] == "" or \
-                data['first_name'] == "" or data['last_name'] == "":
+            if strip_clean(data['email']) == "" or \
+               strip_clean(data['password']) == "" or \
+               strip_clean(data['first_name']) == "" or \
+               strip_clean(data['last_name']) == "":
                 return jsonify({'message': 
                                 'All fields must be filled'}), 400
             if not validate_email(is_valid_email(data['email'])):
@@ -57,10 +64,10 @@ class RegisterAPI(MethodView):
         if not user:
             try:
                 new_user = User(public_id=str(uuid.uuid4()), 
-                                email=data['email'], 
-                                password=data['password'], 
-                                first_name=data['first_name'], 
-                                last_name=data['last_name'])
+                                email=strip_clean(data['email']), 
+                                password=strip_clean(data['password']), 
+                                first_name=strip_clean(data['first_name']), 
+                                last_name=strip_clean(data['last_name']))
                 new_user.save()
                 responseObject = {
                     'status': 'success',
