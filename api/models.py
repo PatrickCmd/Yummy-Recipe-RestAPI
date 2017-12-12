@@ -163,6 +163,8 @@ class Recipe(db.Model):
     cat_id = db.Column(db.Integer, db.ForeignKey('recipe_category.id'), 
                         nullable=False)
     user_id = db.Column(db.Integer, nullable=False)
+    category = db.relationship("RecipeCategory", backref=db.backref("recipe", 
+                               cascade="all, delete-orphan"))
 
     def __init__(self, name, cat_id, user_id,  ingredients=None, 
                  description=None):
