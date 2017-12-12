@@ -105,11 +105,11 @@ class RecipeCategoryAPI(MethodView):
                 limit = request.args.get('limit', 3)
                 page = request.args.get('page', 1)
                 search = request.args.get('q', "")
-                if limit:
+                '''if limit:
                     limit = int(limit)
                     # offset = int(request.args.get('offset', 0))
                     categories = RecipeCategory.get_all_limit_offset(
-                                                current_user.id, limit)
+                                                current_user.id, limit)'''
                 if limit and page:
                     try:
                         limit = int(limit)

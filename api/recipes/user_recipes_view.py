@@ -26,10 +26,6 @@ def user_recipes_view(current_user):
             # pagination
             limit = request.args.get('limit', 0)
             page = request.args.get('page', 1)
-            if limit:
-                limit = int(limit)
-                # offset = int(request.args.get('offset', 0))
-                recipes = Recipe.get_all_limit(current_user.id, limit)
             if limit and page:
                     try:
                         limit = int(limit)

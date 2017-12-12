@@ -2,6 +2,7 @@
 import datetime
 import jwt
 
+from nose import SkipTest
 from api import app, db, bcrypt
 
 
@@ -137,6 +138,7 @@ class RecipeCategory(db.Model):
         return RecipeCategory.query.all()
 
     @staticmethod
+    @SkipTest
     def get_all_limit_offset(userid, lim):
         return RecipeCategory.query.filter_by(user_id=\
                                               userid).limit(lim).all()
