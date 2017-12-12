@@ -11,7 +11,6 @@ from api import db
 from api.models import User, RecipeCategory
 from tests.base import BaseTestCase
 from tests.register_login import RegisterLogin
-from api.helpers.paginated import get_paginated_list
 
 
 class TestPaginateCategories(RegisterLogin):
@@ -81,6 +80,12 @@ class TestPaginateCategories(RegisterLogin):
                     str(response.data))
         self.assertIn('How to make Dinner', 
                         str(response.data))
+        response = self.client.get('/recipe_category?limit=a&page=b', 
+                                        headers=headers)
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('limit and page query parameters should be integers', 
+                    str(response.data))
+        
         
         '''
         categories = RecipeCategory.query.all()
