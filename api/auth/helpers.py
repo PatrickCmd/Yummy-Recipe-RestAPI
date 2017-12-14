@@ -31,8 +31,6 @@ def name_has_numbers(data):
     for key in keys:
         if hasNumbers(data[key]):
             return True
-        else:
-            return False
 
 # string string to remove white spaces
 def strip_clean(string):
@@ -72,8 +70,7 @@ def key_is_not_string(data):
     for key in data:
         if not isinstance(data[key], str):
             return True
-        else:
-            return False
+
 
 # check if endpoint url_rule is correct
 '''def not_correct_urlrule(url):
