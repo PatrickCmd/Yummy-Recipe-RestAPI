@@ -115,7 +115,7 @@ class RecipeCategory(db.Model):
 
     __tablename__ = 'recipe_category'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), unique=True, nullable=False)
+    name = db.Column(db.String(120), unique=False, nullable=False)
     description = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), 
                         nullable=False)
@@ -157,7 +157,7 @@ class Recipe(db.Model):
 
     __tablename__ = 'recipe'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), unique=True, nullable=False)
+    name = db.Column(db.String(120), unique=False, nullable=False)
     ingredients = db.Column(db.String(250))
     description = db.Column(db.Text)
     cat_id = db.Column(db.Integer, db.ForeignKey('recipe_category.id'), 
