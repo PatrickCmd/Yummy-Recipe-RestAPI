@@ -1,4 +1,4 @@
-# tests/test_recipes.py
+# tests/test_recipes_retrival.py
 
 import unittest
 import json
@@ -10,104 +10,8 @@ from api.models import User, RecipeCategory, Recipe
 from tests.register_login import RegisterLogin
 
 
-class TestRecipeBlueprint(RegisterLogin):
+class TestRetriveRecipeBlueprint(RegisterLogin):
 
-
-    def test_recipe_creation_in_category(self):
-        """
-        Test for recipe creation in category
-        """
-        response = self.register_user(
-            "Patrick", "Walukagga", 
-            "pwalukagga@gmail.com", "telnetcmd123"
-        )
-        # registered user login
-        rep_login = self.login_user("pwalukagga@gmail.com", "telnetcmd123")
-        # valid token
-        headers=dict(
-            Authorization='Bearer ' + json.loads(
-                rep_login.data.decode()
-            )['auth_token']
-        )
-        category = RecipeCategory(
-            name="Breakfast",
-            description="How to make breakfast",
-            user_id=1
-        )
-        category.save()
-        response = self.create_category("LunchBuffe", 
-                                        "How to make lunch buffe", 
-                                        headers)
-        response = self.create_recipe_in_category(2, 
-            "Chicken Lunch Buffe",
-            "oil, Onions,Tomatoes",
-            "Mix and boil",
-            headers
-        )
-        self.assertEqual(response.status_code, 201)
-        self.assertIn('New recipe added to category', 
-                       str(response.data))
-        # create recipe with same name
-        response = self.create_recipe_in_category(2, 
-            "Chicken Lunch Buffe",
-            "oil, Onions,Tomatoes",
-            "Mix and boil",
-            headers
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertIn('Recipe already exists', 
-                       str(response.data))
-        # create recipe in category which doesnot exit
-        response = self.create_recipe_in_category(3, 
-            "Chicken Lunch Buffe",
-            "oil, Onions,Tomatoes",
-            "Mix and boil",
-            headers
-        )
-        self.assertEqual(response.status_code, 404)
-        self.assertIn('Category not found in database', 
-                       str(response.data))
-        # create recipe with empty fields
-        response = self.create_recipe_in_category(2, "", "", "", headers)
-        self.assertEqual(response.status_code, 200)
-        self.assertIn('field names not provided', 
-                       str(response.data))
-
-    def test_recipe_creation_with_name_has_numbers(self):
-        """
-        Test for recipe creation with name has numbers
-        """
-        response = self.register_user(
-            "Patrick", "Walukagga", 
-            "pwalukagga@gmail.com", "telnetcmd123"
-        )
-        # registered user login
-        rep_login = self.login_user("pwalukagga@gmail.com", "telnetcmd123")
-        # valid token
-        headers=dict(
-            Authorization='Bearer ' + json.loads(
-                rep_login.data.decode()
-            )['auth_token']
-        )
-        category = RecipeCategory(
-            name="Breakfast",
-            description="How to make breakfast",
-            user_id=1
-        )
-        category.save()
-        response = self.create_category("LunchBuffe", 
-                                        "How to make lunch buffe", 
-                                        headers)
-        response = self.create_recipe_in_category(2, 
-            1273839393,
-            "oil, Onions,Tomatoes",
-            "Mix and boil",
-            headers
-        )
-        self.assertEqual(response.status_code, 400)
-        self.assertIn('Bad request, body field must be of type string', 
-                       str(response.data))
-    
     def test_get_recipes_in_category(self):
         """
         Test for getting recipes in category
@@ -215,15 +119,18 @@ class TestRecipeBlueprint(RegisterLogin):
             "Mix and boil",
             headers
         )
-        response = self.client.get('/recipe_category/recipes', 
+        response = self.client.get('/recipes', 
                                     headers=headers)
         self.assertEqual(response.status_code, 200)
         self.assertIn('Rolex for Breakfast', str(response.data))
         self.assertIn('Rolex for Lunch', str(response.data))
         self.assertIn('Mix and boil', str(response.data))
         # get recipes in category with limit
-        response = self.client.get('/recipe_category/recipes?limit=1', 
+        response = self.client.get('/recipes?limit=1', 
                                     headers=headers)
         self.assertEqual(response.status_code, 200)
         self.assertIn('Rolex for Lunch', str(response.data))
         self.assertNotIn('Mix and boil', str(response.data))
+
+if __name__ == '__main__':
+    unittest.main()
