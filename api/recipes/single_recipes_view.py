@@ -31,6 +31,12 @@ class SingleRecipeAPI(MethodView):
         if auth_token:
             resp = current_user.decode_auth_token(auth_token)
             if not isinstance(resp, str):
+                if not cat_id.isdigit():
+                    responseObject = {
+                        'error': 'Category ID must be an integer',
+                        'status': "fail"
+                    }
+                    return make_response(jsonify(responseObject)), 400
                 category = RecipeCategory.query.filter_by(id=cat_id, 
                                                   user_id=\
                                                   current_user.id).\
@@ -40,6 +46,12 @@ class SingleRecipeAPI(MethodView):
                         'message': 'Category not found in database'
                     }
                     return make_response(jsonify(responseObject)), 404
+                if not recipe_id.isdigit():
+                    responseObject = {
+                        'error': 'Recipe ID must be an integer',
+                        'status': "fail"
+                    }
+                    return make_response(jsonify(responseObject)), 400
                 recipe = Recipe.query.filter_by(id=recipe_id,
                                         cat_id=cat_id, 
                                         user_id=current_user.id).\
@@ -88,6 +100,18 @@ class SingleRecipeAPI(MethodView):
                 if not request.get_json(force=True):
                     abort(400)
                 data = request.get_json(force=True)
+                if isinstance(data, str):
+                    responseObject = {
+                        'error': 'request must be of json format',
+                        'status': "fail"
+                    }
+                    return make_response(jsonify(responseObject)), 400
+                if not cat_id.isdigit():
+                    responseObject = {
+                        'error': 'Category ID must be an integer',
+                        'status': "fail"
+                    }
+                    return make_response(jsonify(responseObject)), 400
                 category = RecipeCategory.query.filter_by(id=cat_id, 
                                                   user_id=\
                                                   current_user.id).\
@@ -97,6 +121,12 @@ class SingleRecipeAPI(MethodView):
                         'message': 'Category not found in database'
                     }
                     return make_response(jsonify(responseObject)), 404
+                if not recipe_id.isdigit():
+                    responseObject = {
+                        'error': 'Recipe ID must be an integer',
+                        'status': "fail"
+                    }
+                    return make_response(jsonify(responseObject)), 400
                 recipe = Recipe.query.filter_by(id=recipe_id,
                                         cat_id=cat_id, 
                                         user_id=current_user.id).\
@@ -149,6 +179,12 @@ class SingleRecipeAPI(MethodView):
         if auth_token:
             resp = current_user.decode_auth_token(auth_token)
             if not isinstance(resp, str):
+                if not cat_id.isdigit():
+                    responseObject = {
+                        'error': 'Category ID must be an integer',
+                        'status': "fail"
+                    }
+                    return make_response(jsonify(responseObject)), 400
                 category = RecipeCategory.query.filter_by(id=cat_id, 
                                                   user_id=\
                                                   current_user.id).\
@@ -158,6 +194,12 @@ class SingleRecipeAPI(MethodView):
                         'message': 'Category not found in database'
                     }
                     return make_response(jsonify(responseObject)), 404
+                if not recipe_id.isdigit():
+                    responseObject = {
+                        'error': 'Recipe ID must be an integer',
+                        'status': "fail"
+                    }
+                    return make_response(jsonify(responseObject)), 400
                 recipe = Recipe.query.filter_by(id=recipe_id,
                                         cat_id=cat_id, 
                                         user_id=current_user.id).\

@@ -26,6 +26,7 @@ def user_recipes_view(current_user):
             # pagination
             limit = request.args.get('limit', 0)
             page = request.args.get('page', 1)
+            search = request.args.get('q', "")
             if limit and page:
                     try:
                         limit = int(limit)
@@ -38,6 +39,9 @@ def user_recipes_view(current_user):
                                          current_user.id).paginate(
                                              page, limit, False
                                         ).items
+            if search:
+                recipes = [recipe for recipe in recipes if 
+                          recipe.name == search]
             recipe_list = []
             for recipe in recipes:
                 recipe_data = {}
@@ -50,7 +54,7 @@ def user_recipes_view(current_user):
                 recipe_list.append(recipe_data)
             responseObject = {
                 'status': 'sucess',
-                'recipes in category': recipe_list
+                'recipes': recipe_list
             }
             return make_response(jsonify(responseObject)), 200
         else:
@@ -68,7 +72,7 @@ def user_recipes_view(current_user):
 
 # add rules for the API endpoints /recipe_category/recipes or /recipe_category/recipes?page=<int: page>&limit=<int: limit>
 user_recipes_blueprint.add_url_rule(
-    '/recipe_category/recipes',
+    '/recipes',
     view_func=user_recipes_view,
     methods=['GET']
 )

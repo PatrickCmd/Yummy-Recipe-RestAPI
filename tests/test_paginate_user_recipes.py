@@ -67,16 +67,19 @@ class TestUserRecipeBlueprint(RegisterLogin):
             "Mix and boil",
             headers
         )
-        response = self.client.get('/recipe_category/recipes?page=1&limit=2', 
+        response = self.client.get('/recipes?page=1&limit=2', 
                                     headers=headers)
         self.assertEqual(response.status_code, 200)
         self.assertIn('Rolex for Breakfast', str(response.data))
         self.assertIn('Rolex for Lunch', str(response.data))
         self.assertNotIn('Chicken Lunch Buffe', str(response.data))
         # paginate with non integer values
-        response = self.client.get('/recipe_category/recipes?page=a&limit=b', 
+        response = self.client.get('/recipes?page=a&limit=b', 
                                     headers=headers)
         self.assertEqual(response.status_code, 400)
         self.assertIn('limit and page query parameters should be integers', 
                       str(response.data))
+
+if __name__ == '__main__':
+    unittest.main()
         

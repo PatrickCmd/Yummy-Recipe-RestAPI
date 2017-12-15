@@ -86,14 +86,5 @@ class TestPaginateCategories(RegisterLogin):
         self.assertIn('limit and page query parameters should be integers', 
                     str(response.data))
         
-        
-        '''
-        categories = RecipeCategory.query.all()
-        obj = get_paginated_list(
-            categories, '/recipe_category', 
-            page = request.args.get('page', 1), 
-            limit = request.args.get('limit', 3)
-        )
-        self.assertIn("How to make breakfast", obj.values())
-        self.assertIn("How to make Lunch", obj.values())
-        self.assertIn("How to make fried chapatis", obj.values())'''
+if __name__ == '__main__':
+    unittest.main()

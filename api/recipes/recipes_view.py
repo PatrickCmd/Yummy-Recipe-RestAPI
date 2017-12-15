@@ -34,6 +34,12 @@ class RecipeAPI(MethodView):
         if auth_token:
             resp = current_user.decode_auth_token(auth_token)
             if not isinstance(resp, str):
+                if not cat_id.isdigit():
+                    responseObject = {
+                        'error': 'Category ID must be an integer',
+                        'status': "fail"
+                    }
+                    return make_response(jsonify(responseObject)), 400
                 category = RecipeCategory.query.filter_by(id=cat_id, 
                                                   user_id=\
                                                   current_user.id).\
@@ -62,6 +68,7 @@ class RecipeAPI(MethodView):
                         return make_response(
                             jsonify(responseObject)), 200
                     if Recipe.query.filter_by(name=data['name'], 
+                                      cat_id=cat_id,
                                       user_id=current_user.id).\
                                       first():
                         responseObject = {
@@ -110,6 +117,12 @@ class RecipeAPI(MethodView):
         if auth_token:
             resp = current_user.decode_auth_token(auth_token)
             if not isinstance(resp, str):
+                if not cat_id.isdigit():
+                    responseObject = {
+                        'error': 'Category ID must be an integer',
+                        'status': "fail"
+                    }
+                    return make_response(jsonify(responseObject)), 400
                 category = RecipeCategory.query.filter_by(id=cat_id, 
                                                   user_id=\
                                                   current_user.id).\
