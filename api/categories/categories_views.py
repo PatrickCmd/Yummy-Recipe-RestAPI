@@ -51,6 +51,7 @@ class RecipeCategoryAPI(MethodView):
                         return make_response(
                             jsonify(responseObject)), 200
                     if RecipeCategory.query.filter_by(
+                        user_id=current_user.id, 
                         name=data['name']).first():
                         responseObject = {
                             'status': 'fail',
@@ -102,7 +103,7 @@ class RecipeCategoryAPI(MethodView):
                                          filter_by(user_id=\
                                          current_user.id).all()
                 # pagination
-                limit = request.args.get('limit', 3)
+                limit = request.args.get('limit', 0)
                 page = request.args.get('page', 1)
                 search = request.args.get('q', "")
                 '''if limit:

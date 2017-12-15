@@ -31,6 +31,12 @@ class SingleRecipeCategoryAPI(MethodView):
         if auth_token:
             resp = current_user.decode_auth_token(auth_token)
             if not isinstance(resp, str):
+                if not cat_id.isdigit():
+                    responseObject = {
+                        'error': 'Category ID must be an integer',
+                        'status': "fail"
+                    }
+                    return make_response(jsonify(responseObject)), 400
                 category = RecipeCategory.query.filter_by(id=cat_id, 
                                                   user_id=\
                                                   current_user.id).\
@@ -75,6 +81,12 @@ class SingleRecipeCategoryAPI(MethodView):
                 if not request.get_json(force=True):
                     abort(400)
                 data = request.get_json(force=True)
+                if not cat_id.isdigit():
+                    responseObject = {
+                        'error': 'Category ID must be an integer',
+                        'status': "fail"
+                    }
+                    return make_response(jsonify(responseObject)), 400
                 category = RecipeCategory.query.filter_by(id=cat_id, 
                                                   user_id=\
                                                   current_user.id).\
@@ -120,6 +132,12 @@ class SingleRecipeCategoryAPI(MethodView):
         if auth_token:
             resp = current_user.decode_auth_token(auth_token)
             if not isinstance(resp, str):
+                if not cat_id.isdigit():
+                    responseObject = {
+                        'error': 'Category ID must be an integer',
+                        'status': "fail"
+                    }
+                    return make_response(jsonify(responseObject)), 400
                 category = RecipeCategory.query.filter_by(id=cat_id, 
                                                   user_id=\
                                                   current_user.id).\
