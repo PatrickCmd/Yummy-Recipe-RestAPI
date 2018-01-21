@@ -105,7 +105,7 @@ class RecipeCategoryAPI(MethodView):
                 # pagination
                 limit = request.args.get('limit', 0)
                 page = request.args.get('page', 1)
-                search = request.args.get('q', "")
+                search = str(request.args.get('q', "")).lower()
                 '''if limit:
                     limit = int(limit)
                     # offset = int(request.args.get('offset', 0))
@@ -125,7 +125,7 @@ class RecipeCategoryAPI(MethodView):
                                         ).items
                 if search:
                     categories = [category for category in categories if 
-                                category.name == search]
+                                  search in str(category.name).lower()]
                 category_list = []
                 for category in categories:
                     category_data = {}

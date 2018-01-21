@@ -26,7 +26,7 @@ def user_recipes_view(current_user):
             # pagination
             limit = request.args.get('limit', 0)
             page = request.args.get('page', 1)
-            search = request.args.get('q', "")
+            search = str(request.args.get('q', "")).lower()
             if limit and page:
                     try:
                         limit = int(limit)
@@ -41,7 +41,7 @@ def user_recipes_view(current_user):
                                         ).items
             if search:
                 recipes = [recipe for recipe in recipes if 
-                          recipe.name == search]
+                           search in str(recipe.name).lower()]
             recipe_list = []
             for recipe in recipes:
                 recipe_data = {}
