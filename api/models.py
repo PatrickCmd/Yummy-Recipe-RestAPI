@@ -66,7 +66,7 @@ class User(db.Model):
         db.session.delete(self)
         db.session.commit()
     
-    def encode_auth_token(self, user_id, public_id):
+    def encode_auth_token(self, user_id, public_id, email, first_name, last_name):
         """
         Generates the Auth Token
         :return: string
@@ -74,9 +74,12 @@ class User(db.Model):
         try:
             payload = {
                 'exp': datetime.datetime.utcnow() + 
-                       datetime.timedelta(days=0, minutes=30),
+                       datetime.timedelta(days=0, minutes=525600),
                 'iat': datetime.datetime.utcnow(),
                 'user_id': user_id,
+                'email': email,
+                'first_name': first_name,
+                'last_name': last_name,
                 'public_id': public_id
             }
             return jwt.encode(
@@ -158,8 +161,9 @@ class Recipe(db.Model):
     __tablename__ = 'recipe'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=False, nullable=False)
-    ingredients = db.Column(db.String(250))
+    ingredients = db.Column(db.Text)
     description = db.Column(db.Text)
+    directions = db.Column(db.Text)
     cat_id = db.Column(db.Integer, db.ForeignKey('recipe_category.id'), 
                         nullable=False)
     user_id = db.Column(db.Integer, nullable=False)
@@ -167,10 +171,11 @@ class Recipe(db.Model):
                                cascade="all, delete-orphan"))
 
     def __init__(self, name, cat_id, user_id,  ingredients=None, 
-                 description=None):
+                 description=None, directions=None):
         self.name = name
         self.ingredients = ingredients
         self.description = description
+        self.directions = directions
         self.cat_id = cat_id
         self.user_id = user_id
     
