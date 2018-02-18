@@ -60,7 +60,7 @@ def category_key_missing_in_body(data):
 
 def recipe_key_missing_in_body(data):
     # check if key is present in data
-    keys = ('name', 'ingredients', 'description')
+    keys = ('name', 'ingredients', 'description', 'directions')
     for key in keys:
         if key not in data:
             abort(400)
