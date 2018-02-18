@@ -60,7 +60,7 @@ class RecipeAPI(MethodView):
                         }
                         return jsonify(response_object), 400
                     if data['name'] == "" or data["description"] == "" \
-                       or data['ingredients'] == "":
+                       or data['ingredients'] == "" or data['directions'] == "":
                         responseObject = {
                             'status': 'fail',
                             'message': 'field names not provided'
@@ -81,7 +81,8 @@ class RecipeAPI(MethodView):
                             cat_id=cat_id, 
                             user_id=current_user.id,
                             ingredients=data['ingredients'],
-                            description=data['description'])
+                            description=data['description'],
+                            directions=data['directions'])
                     recipe.save()
                     responseObject = {
                         'status': 'success',
@@ -133,16 +134,36 @@ class RecipeAPI(MethodView):
                     }
                     return make_response(jsonify(responseObject)), 404
                 '''Returns recipes of current logged in user'''
-                recipes = Recipe.query.filter_by(cat_id=cat_id, user_id=\
-                                                 current_user.id).all()
+                # recipes = Recipe.query.filter_by(cat_id=cat_id, user_id=current_user.id).all()
                 # pagination
-                limit = request.args.get('limit', 0)
-                if limit:
-                    limit = int(limit)
-                    # offset = int(request.args.get('offset', 0))
-                    recipes = Recipe.get_all_limit_offset(cat_id,
-                                                        current_user.id, 
-                                                        limit)
+                limit = request.args.get('limit', 4)
+                page = request.args.get('page', 1)
+                if limit and page:
+                    try:
+                        limit = int(limit)
+                        page = int(page)
+                    except ValueError:
+                        return make_response(jsonify({'message':
+                            'limit and page query parameters should be integers'})), 400
+                recipes = Recipe.query.filter_by(cat_id=cat_id, user_id=\
+                                                 current_user.id).paginate(
+                                                 page=page, per_page=limit, 
+                                                 error_out=False
+                                                )
+                total_items = recipes.total
+                total_pages = recipes.pages
+                current_page = recipes.page
+                items_per_page = recipes.per_page
+                prev_page = ''
+                next_page = ''
+
+                if recipes.has_prev:
+                    prev_page = recipes.prev_num
+                if recipes.has_next:
+                    next_page = recipes.next_num
+            
+                recipes = recipes.items
+
                 recipe_list = []
                 for recipe in recipes:
                     recipe_data = {}
@@ -152,10 +173,18 @@ class RecipeAPI(MethodView):
                     recipe_data['name'] = recipe.name
                     recipe_data['ingredients'] = recipe.ingredients
                     recipe_data['description'] = recipe.description
+                    recipe_data['directions'] = recipe.directions
                     recipe_list.append(recipe_data)
+                    
                 responseObject = {
                     'status': 'sucess',
-                    'recipes in category': recipe_list
+                    'next_page': next_page,
+                    'previous_page': prev_page,
+                    'total_count': total_items,
+                    'pages': total_pages,
+                    'current_page': current_page,
+                    'per_page': items_per_page,
+                    'recipes_in_category': recipe_list
                 }
                 return make_response(jsonify(responseObject)), 200
             else:
