@@ -103,7 +103,8 @@ class RecipeCategoryAPI(MethodView):
                                          filter_by(user_id=\
                                          current_user.id).all()
                 # pagination
-                limit = request.args.get('limit', 0)
+                url = '/recipe_category'
+                limit = request.args.get('limit', 10)
                 page = request.args.get('page', 1)
                 search = str(request.args.get('q', "")).lower()
                 '''if limit:
@@ -121,8 +122,24 @@ class RecipeCategoryAPI(MethodView):
                     # return an empty list if no recipe categories are found thus the False
                     categories = RecipeCategory.query.filter_by(user_id=\
                                          current_user.id).paginate(
-                                             page, limit, False
-                                        ).items
+                                             page=page, per_page=limit, 
+                                             error_out=False
+                                        )
+                total_items = categories.total
+                total_pages = categories.pages
+                current_page = categories.page
+                items_per_page = categories.per_page
+                prev_page = ''
+                next_page = ''
+
+                if categories.has_prev:
+                    prev_page = categories.prev_num
+                if categories.has_next:
+                    next_page = categories.next_num
+                
+                categories = categories.items
+
+                
                 if search:
                     categories = [category for category in categories if 
                                   search in str(category.name).lower()]
@@ -133,9 +150,32 @@ class RecipeCategoryAPI(MethodView):
                     category_data['name'] = category.name
                     category_data['description'] = category.description
                     category_list.append(category_data)
+                
+                # make URLs
+                # make previous url
+                if page == 1:
+                    prev_page_url = ''
+                else:
+                    start_copy = max(1, page - 1)
+                    prev_page_url = url + '?page=%d&limit=%d' % (start_copy, limit)
+                # make next url
+                if len(category_list) == 0:
+                    next_page_url = ''
+                else:
+                    start_copy = page + 1
+                    next_page_url = url + '?page=%d&limit=%d' % (start_copy, limit)
+
                 responseObject = {
                     'status': 'success',
-                    'recipe categories': category_list
+                    'next_page': next_page,
+                    'previous_page': prev_page,
+                    'next_page_url': next_page_url,
+                    'prev_page_url': prev_page_url,
+                    'total_count': total_items,
+                    'pages': total_pages,
+                    'current_page': current_page,
+                    'per_page': items_per_page,
+                    'recipe_categories': category_list
                 }
                 return make_response(jsonify(responseObject)), 200
             else:
