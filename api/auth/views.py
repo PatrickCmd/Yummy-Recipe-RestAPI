@@ -83,9 +83,9 @@ class RegisterAPI(MethodView):
         else:
             responseObject = {
                 'status': 'fail',
-                'message': 'User already exists'
+                'message': 'User with that email already exists'
             }
-            return make_response(jsonify(responseObject)), 202
+            return make_response(jsonify(responseObject)), 409
 
 
 class LoginAPI(MethodView):
@@ -115,7 +115,10 @@ class LoginAPI(MethodView):
                     data['password']
                 ):
                     auth_token = user.encode_auth_token(user.id, 
-                                                        user.public_id)
+                                                        user.public_id, 
+                                                        user.email, 
+                                                        user.first_name, 
+                                                        user.last_name)
                     if auth_token:
                         responseObject = {
                             'status': 'success',
