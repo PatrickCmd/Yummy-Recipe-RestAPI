@@ -69,9 +69,10 @@ class SingleRecipeAPI(MethodView):
                 recipe_data['name'] = recipe.name
                 recipe_data['ingredients'] = recipe.ingredients
                 recipe_data['description'] = recipe.description
+                recipe_data['directions'] = recipe.directions
                 responseObject = {
                     'status': 'sucess',
-                    'recipe in category': recipe_data
+                    'recipe': recipe_data
                 }
                 return make_response(jsonify(responseObject)), 200
             else:
@@ -138,18 +139,22 @@ class SingleRecipeAPI(MethodView):
                     }
                     return make_response(jsonify(responseObject)), 404
                 if "name" in data and "ingredients" not in data and \
-                   "description" not in data:
+                   "description" not in data and "directions" not in data:
                     recipe.name = data['name']
                 elif "name" not in data and "ingredients" in data and \
-                     "description" not in data:
+                     "description" not in data and "directions" not in data:
                     recipe.ingredients = data['ingredients']
                 elif "name" not in data and "ingredients" not in data and \
-                     "description" in data:
+                     "directions" not in data and "description" in data:
                     recipe.description = data['description']
+                elif "name" not in data and "ingredients" not in data and \
+                    "description" not in data and "directions" in data:
+                    recipe.directions = data['directions']
                 else:   
                     recipe.name = data['name']
                     recipe.ingredients = data['ingredients']
                     recipe.description = data['description']
+                    recipe.directions = data['directions']
                 recipe.save()
                 responseObject = {
                     'status': 'sucess',
