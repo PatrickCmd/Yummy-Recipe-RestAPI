@@ -24,21 +24,37 @@ def user_recipes_view(current_user):
             '''Returns recipes of current logged in user'''
             recipes = Recipe.query.filter_by(user_id=current_user.id).all()
             # pagination
-            limit = request.args.get('limit', 0)
+            limit = request.args.get('limit', 4)
             page = request.args.get('page', 1)
             search = str(request.args.get('q', "")).lower()
             if limit and page:
-                    try:
-                        limit = int(limit)
-                        page = int(page)
-                    except ValueError:
-                        return make_response(jsonify({'message':
-                            'limit and page query parameters should be integers'})), 400
-                    # return an empty list if no recipe categories are found thus the False
-                    recipes = Recipe.query.filter_by(user_id=\
-                                         current_user.id).paginate(
-                                             page, limit, False
-                                        ).items
+                try:
+                    limit = int(limit)
+                    page = int(page)
+                except ValueError:
+                    return make_response(jsonify({'message':
+                        'limit and page query parameters should be integers'})), 400
+                # return an empty list if no recipe categories are found thus the False
+            recipes = Recipe.query.filter_by(user_id=\
+                                        current_user.id).paginate(
+                                        page=page, per_page=limit, 
+                                        error_out=False
+                                    )
+
+            total_items = recipes.total
+            total_pages = recipes.pages
+            current_page = recipes.page
+            items_per_page = recipes.per_page
+            prev_page = ''
+            next_page = ''
+
+            if recipes.has_prev:
+                prev_page = recipes.prev_num
+            if recipes.has_next:
+                next_page = recipes.next_num
+            
+            recipes = recipes.items
+
             if search:
                 recipes = [recipe for recipe in recipes if 
                            search in str(recipe.name).lower()]
@@ -51,9 +67,17 @@ def user_recipes_view(current_user):
                 recipe_data['name'] = recipe.name
                 recipe_data['ingredients'] = recipe.ingredients
                 recipe_data['description'] = recipe.description
+                recipe_data['directions'] = recipe.directions
                 recipe_list.append(recipe_data)
+
             responseObject = {
                 'status': 'sucess',
+                'next_page': next_page,
+                'previous_page': prev_page,
+                'total_count': total_items,
+                'pages': total_pages,
+                'current_page': current_page,
+                'per_page': items_per_page,
                 'recipes': recipe_list
             }
             return make_response(jsonify(responseObject)), 200
