@@ -52,7 +52,7 @@ class SingleRecipeCategoryAPI(MethodView):
                 category_data['description'] = category.description
                 responseObject = {
                     'status': 'success',
-                    'recipe category': category_data
+                    'recipe_category': category_data
                 }
                 return make_response(jsonify(responseObject)), 200
             else:
