@@ -67,7 +67,7 @@ class RecipeAPI(MethodView):
                         }
                         return make_response(
                             jsonify(responseObject)), 200
-                    if Recipe.query.filter_by(name=data['name'], 
+                    if Recipe.query.filter_by(name=' '.join(data['name'].split()).capitalize(), 
                                       cat_id=cat_id,
                                       user_id=current_user.id).\
                                       first():
@@ -76,8 +76,8 @@ class RecipeAPI(MethodView):
                             'message': 'Recipe already exists'
                         }
                         return make_response(
-                            jsonify(responseObject)), 200
-                    recipe = Recipe(name=data['name'], 
+                            jsonify(responseObject)), 202
+                    recipe = Recipe(name=' '.join(data['name'].split()).capitalize(), 
                             cat_id=cat_id, 
                             user_id=current_user.id,
                             ingredients=data['ingredients'],
