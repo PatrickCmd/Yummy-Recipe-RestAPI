@@ -65,6 +65,7 @@ class SingleRecipeAPI(MethodView):
                 recipe_data = {}
                 recipe_data['id'] = recipe.id
                 recipe_data['cat_id'] = recipe.cat_id
+                recipe_data['cat_name'] = category.name
                 recipe_data['user_id'] = recipe.user_id
                 recipe_data['name'] = recipe.name
                 recipe_data['ingredients'] = recipe.ingredients
