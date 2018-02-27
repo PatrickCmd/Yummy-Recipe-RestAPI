@@ -18,7 +18,8 @@ class TestUserModel(BaseTestCase):
             password = "test1234"
         )
         user.save()
-        auth_token = user.encode_auth_token(user.id, user.public_id)
+        auth_token = user.encode_auth_token(user.id, user.public_id, user.email, 
+                                            user.first_name, user.last_name)
         self.assertTrue(isinstance(auth_token, bytes))
     
     def test_decode_auth_token(self):
@@ -30,7 +31,8 @@ class TestUserModel(BaseTestCase):
             password = "test1234"
         )
         user.save()
-        auth_token = user.encode_auth_token(user.id, user.public_id)
+        auth_token = user.encode_auth_token(user.id, user.public_id, user.email,
+                                            user.first_name, user.last_name)
         self.assertTrue(isinstance(auth_token, bytes))
         token_value = user.decode_auth_token(auth_token)
         self.assertEqual(token_value, 1)
