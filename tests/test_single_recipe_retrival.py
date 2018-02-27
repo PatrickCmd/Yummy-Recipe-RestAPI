@@ -49,6 +49,7 @@ class TestRetriveSingleRecipeBlueprint(RegisterLogin):
         response = self.create_recipe_in_category(2, 
             "Chicken Lunch Buffe",
             "oil, Onions,Tomatoes",
+            "Fresh chicken",
             "Mix and boil",
             headers
         )
@@ -106,6 +107,7 @@ class TestRetriveSingleRecipeBlueprint(RegisterLogin):
         response = self.create_recipe_in_category(2, 
             "Chicken Lunch Buffe",
             "oil, Onions,Tomatoes",
+            "Fresh chicken",
             "Mix and boil",
             headers
         )
@@ -153,6 +155,7 @@ class TestRetriveSingleRecipeBlueprint(RegisterLogin):
         response = self.create_recipe_in_category(2, 
             "Chicken Lunch Buffe",
             "oil, Onions,Tomatoes",
+            "Fresh chicken",
             "Mix and boil",
             headers
         )

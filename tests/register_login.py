@@ -38,10 +38,11 @@ class RegisterLogin(BaseTestCase):
                                 data=category_data)
     
     # helper function to create recipe in category
-    def create_recipe_in_category(self, cat_id, name, ingredients, description, headers):
+    def create_recipe_in_category(self, cat_id, name, ingredients, description, directions, headers):
         recipe_data = json.dumps({"name": name, 
                                   "ingredients": ingredients,
-                                  "description": description
+                                  "description": description,
+                                  "directions": directions
                                 })
         return self.client.post('/recipe_category/'+str(cat_id)+'/recipes', 
                                 headers=headers, 

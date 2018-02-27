@@ -94,8 +94,8 @@ class TestAuthRegisterBlueprint(RegisterLogin):
                 "Patrick", "Walukagga", 
                 "pwalukagga@gmail.com", "telnetcmd123"
             )
-            self.assertEqual(response.status_code, 202)
-            self.assertIn('User already exists', str(response.data))
+            self.assertEqual(response.status_code, 409)
+            self.assertIn('User with that email already exists', str(response.data))
             self.assertIn('fail', str(response.data))
     
     def test_user_registration_fails_with_invalid_email(self):

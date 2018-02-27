@@ -41,6 +41,7 @@ class TestCreateRecipeBlueprint(RegisterLogin):
         response = self.create_recipe_in_category(2, 
             "Chicken Lunch Buffe",
             "oil, Onions,Tomatoes",
+            "Fresh chicken",
             "Mix and boil",
             headers
         )
@@ -51,16 +52,18 @@ class TestCreateRecipeBlueprint(RegisterLogin):
         response = self.create_recipe_in_category(2, 
             "Chicken Lunch Buffe",
             "oil, Onions,Tomatoes",
+            "Fresh chicken",
             "Mix and boil",
             headers
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 202)
         self.assertIn('Recipe already exists', 
                        str(response.data))
         # create recipe in category which doesnot exit
         response = self.create_recipe_in_category(3, 
             "Chicken Lunch Buffe",
             "oil, Onions,Tomatoes",
+            "Fresh chicken",
             "Mix and boil",
             headers
         )
@@ -68,7 +71,7 @@ class TestCreateRecipeBlueprint(RegisterLogin):
         self.assertIn('Category not found in database', 
                        str(response.data))
         # create recipe with empty fields
-        response = self.create_recipe_in_category(2, "", "", "", headers)
+        response = self.create_recipe_in_category(2, "", "", "", "", headers)
         self.assertEqual(response.status_code, 200)
         self.assertIn('field names not provided', 
                        str(response.data))
@@ -101,6 +104,7 @@ class TestCreateRecipeBlueprint(RegisterLogin):
         response = self.create_recipe_in_category(2, 
             1273839393,
             "oil, Onions,Tomatoes",
+            "Fresh chicken",
             "Mix and boil",
             headers
         )

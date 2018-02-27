@@ -48,12 +48,14 @@ class TestUpdateSingleRecipeBlueprint(RegisterLogin):
         response = self.create_recipe_in_category(2, 
             "Chicken Lunch Buffe",
             "oil, Onions,Tomatoes",
+            "Fresh chicken",
             "Mix and boil",
             headers
         )
         recipe_data = json.dumps({"name": "Chicken Lunch Buffes", 
                                   "ingredients": "oil, Onions",
-                                  "description": "Mix and boil"})
+                                  "description": "Best chicken ever",
+                                  "directions": "Mix and boil"})
         response = self.client.put('/recipe_category/2/recipes/1', 
                                     headers=headers,
                                     data=recipe_data)
@@ -114,6 +116,7 @@ class TestUpdateSingleRecipeBlueprint(RegisterLogin):
         response = self.create_recipe_in_category(2, 
             "Chicken Lunch Buffe",
             "oil, Onions,Tomatoes",
+            "Fresh chicken",
             "Mix and boil",
             headers
         )
@@ -170,6 +173,7 @@ class TestUpdateSingleRecipeBlueprint(RegisterLogin):
         response = self.create_recipe_in_category(2, 
             "Chicken Lunch Buffe",
             "oil, Onions,Tomatoes",
+            "Fresh chicken",
             "Mix and boil",
             headers
         )

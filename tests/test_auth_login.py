@@ -140,7 +140,7 @@ class TestAuthLoginBlueprint(RegisterLogin):
                 content_type='application/json'
             )
             # Invalid token logout
-            time.sleep(121)
+            time.sleep(61)
             headers=dict(
                 Authorization='Bearer ' + json.loads(
                     rep_login.data.decode()
