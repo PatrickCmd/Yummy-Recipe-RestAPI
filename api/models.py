@@ -74,7 +74,7 @@ class User(db.Model):
         try:
             payload = {
                 'exp': datetime.datetime.utcnow() + 
-                       datetime.timedelta(days=0, minutes=525600),
+                       datetime.timedelta(days=0, minutes=1),
                 'iat': datetime.datetime.utcnow(),
                 'user_id': user_id,
                 'email': email,
@@ -190,15 +190,6 @@ class Recipe(db.Model):
     @staticmethod
     def get_all():
         return Recipe.query.all()
-
-    @staticmethod
-    def get_all_limit_offset(catid, userid, lim):
-        return Recipe.query.filter_by(cat_id=catid, user_id=\
-                                      userid).limit(lim).all()
-
-    @staticmethod
-    def get_all_limit(userid, lim):
-        return Recipe.query.filter_by(user_id=userid).limit(lim).all()
 
     def delete(self):
         db.session.delete(self)
